@@ -1,0 +1,27 @@
+<html>
+  <head></head>
+  <body>
+    <script src="ovis-runtime.js"></script>
+    <script>
+      let load = async () => {
+        let module = await createModule({});
+        console.log(Object.keys(module));
+        let FS = module.FS;
+
+        console.log(module.LDSO);
+        console.log(await module.loadDynamicLibrary('test/test-module.wasm', { loadAsync: true, global: true, nodelete: false, fs: FS }));
+
+        let scene = module._ovis_scene_create();
+        for (let i = 0; i < 1000; ++i) {
+          module._ovis_scene_tick(scene, 1.0);
+        }
+        module._ovis_scene_destroy(scene);
+        module._ovis_module_unload();
+
+        console.log(module.LDSO);
+        console.log(module);
+      };
+      load();
+    </script>
+  </body>
+</html>
