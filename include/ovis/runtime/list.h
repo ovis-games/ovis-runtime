@@ -21,8 +21,8 @@ void List_destroy(const struct TypeInfo* list_type, void* ptr);
 bool List_clone(const struct TypeInfo* list_type, const void* src, void* dst);
 
 bool List_m_add(const struct TypeInfo* list_type, struct List* list, const void* value);
-bool List_m_remove(const struct TypeInfo* list_type, struct List* list, const Int* index);
-bool List_m_swap(const struct TypeInfo* list_type, struct List* list, Int first_index, Int second_index);
+bool List_m_remove(const struct TypeInfo* list_type, struct List* list, const ovis_runtime_Int* index);
+bool List_m_swap(const struct TypeInfo* list_type, struct List* list, const ovis_runtime_Int* first_index, const ovis_runtime_Int* second_index);
 
 #ifdef __cplusplus
 }

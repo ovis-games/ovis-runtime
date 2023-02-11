@@ -19,7 +19,7 @@ static const struct TypeInfo* List_element_type(const struct TypeInfo* list_type
 
 static bool List_grow(const struct TypeInfo* list_type, struct List* list) {
   // Use a growth rate of 1.5.
-  const Int new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
+  const ovis_runtime_Int new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
   void* new_data = realloc(list->data, new_capacity * type_stride(List_element_type(list_type)));
   if (new_data == NULL) {
     RETURN_ERROR("out of memory");
@@ -29,7 +29,7 @@ static bool List_grow(const struct TypeInfo* list_type, struct List* list) {
   return true;
 }
 
-static void* list_element_ptr(const struct TypeInfo* list_type, struct List* list, Int index) {
+static void* list_element_ptr(const struct TypeInfo* list_type, struct List* list, ovis_runtime_Int index) {
   return offset_mutable_ptr(list->data, index * type_stride(List_element_type(list_type)));
 }
 
@@ -115,13 +115,13 @@ bool List_m_add(const struct TypeInfo* list_type, struct List* list, const void*
   return true;
 }
 
-bool List_m_remove(const struct TypeInfo* list_type, struct List* list, const Int* index) {
+bool List_m_remove(const struct TypeInfo* list_type, struct List* list, const ovis_runtime_Int* index) {
   void* element_to_remove = list_element_ptr(list_type, list, *index);
   const struct TypeInfo* element_type = List_element_type(list_type);
   element_type->destroy(element_type, element_to_remove);
 
-  const Int elements_after_removed = list->size - *index - 1;
-  const Int stride = type_stride(element_type);
+  const ovis_runtime_Int elements_after_removed = list->size - *index - 1;
+  const ovis_runtime_Int stride = type_stride(element_type);
 
   memmove(element_to_remove, offset_ptr(element_to_remove, stride), elements_after_removed * stride);
   list->size -= 1;
@@ -129,11 +129,11 @@ bool List_m_remove(const struct TypeInfo* list_type, struct List* list, const In
   return true;
 }
 
-bool List_m_swap(const struct TypeInfo* list_type, struct List* list, Int first_index, Int second_index) {
+bool List_m_swap(const struct TypeInfo* list_type, struct List* list, const ovis_runtime_Int* first_index, const ovis_runtime_Int* second_index) {
   const struct TypeInfo* element_type = List_element_type(list_type);
   uint8_t temp[element_type->size];
-  void* first_element = list_element_ptr(list_type, list, first_index);
-  void* second_element = list_element_ptr(list_type, list, second_index);
+  void* first_element = list_element_ptr(list_type, list, *first_index);
+  void* second_element = list_element_ptr(list_type, list, *second_index);
   memcpy(temp, first_element, element_type->size);
   memcpy(first_element, second_element, element_type->size);
   memcpy(second_element, temp, element_type->size);

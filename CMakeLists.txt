@@ -16,6 +16,7 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 option(OVIS_BUILD_TESTS "Build the tests" ${OVIS_RUNTIME_MAIN_PROJECT})
+option(OVIS_COMPILER "Path to the ovis compiler" NONE)
 
 include(CTest)
 include(cmake/CPM.cmake)
@@ -39,6 +40,7 @@ add_library(
   include/ovis/runtime.h src/runtime.c
   include/ovis/runtime/type.h src/type.c
   include/ovis/runtime/basic_types.h src/basic_types.c
+  include/ovis/runtime/string.h src/string.c
   include/ovis/runtime/list.h src/list.c
   include/ovis/runtime/job.h src/job.cpp
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
