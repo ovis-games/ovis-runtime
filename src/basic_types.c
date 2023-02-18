@@ -22,4 +22,4 @@ void Vector3_Float_initialize(const struct TypeInfo* type_info, void* ptr) { mem
 void Vector3_Float_destroy(const struct TypeInfo* type_info, void* ptr) {}
 bool Vector3_Float_clone(const struct TypeInfo* type_info, const void* src, void* dst) { memcpy(dst, src, sizeof(ovis_runtime_Vector3_Float)); return true; }
 static const struct TypeInfo* Vector3_Float_generics[] = { &ovis_runtime_Float_type };
-const struct TypeInfo ovis_runtime_Vector3_Float_type = { sizeof(ovis_runtime_Float_type), 16, Vector3_Float_initialize, Vector3_Float_destroy, Vector3_Float_clone, 1, Vector3_Float_generics };
+const struct TypeInfo ovis_runtime_Vector3_Float_type = { sizeof(ovis_runtime_Vector3_Float), 16, Vector3_Float_initialize, Vector3_Float_destroy, Vector3_Float_clone, 1, Vector3_Float_generics };

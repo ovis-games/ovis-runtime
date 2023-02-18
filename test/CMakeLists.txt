@@ -21,19 +21,17 @@ endmacro()
 add_simple_test(test-basic-types)
 add_simple_test(test-list)
 add_simple_test(test-scheduler)
+add_simple_test(test-var)
 
 if (OVIS_EMSCRIPTEN)
   add_executable(test-module test_module.cpp)
   target_include_directories(test-module PRIVATE ${OVIS_ROOT}/include)
-  if (OVIS_EMSCRIPTEN)
-    set_target_properties(
-      test-module
-      PROPERTIES
-        SUFFIX ".wasm"
-    )
-    target_compile_options(test-module PRIVATE "-sSIDE_MODULE")
-    target_link_options(test-module PRIVATE "-sSIDE_MODULE")
-    configure_file("test_module.html" "${CMAKE_CURRENT_BINARY_DIR}/../test_module.html")
-  else()
-  endif()
+  set_target_properties(
+    test-module
+    PROPERTIES
+      SUFFIX ".wasm"
+  )
+  target_compile_options(test-module PRIVATE "-sSIDE_MODULE")
+  target_link_options(test-module PRIVATE "-sSIDE_MODULE")
+  configure_file("test_module.html" "${CMAKE_CURRENT_BINARY_DIR}/../test_module.html")
 endif()

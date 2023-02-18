@@ -5,8 +5,8 @@
 #include <stdalign.h>
 
 const struct TypeInfo ovis_runtime_String_type = {
-  sizeof(struct ovis_runtime_String),
-  alignof(struct ovis_runtime_String),
+  sizeof(ovis_runtime_String),
+  alignof(ovis_runtime_String),
   ovis_runtime_String_initialize,
   ovis_runtime_String_destroy,
   ovis_runtime_String_clone,
@@ -14,16 +14,16 @@ const struct TypeInfo ovis_runtime_String_type = {
 };
 
 void ovis_runtime_String_initialize(const struct TypeInfo* type_info, void* ptr) {
-  memset(ptr, 0, sizeof(struct ovis_runtime_String));
+  memset(ptr, 0, sizeof(ovis_runtime_String));
 }
 
 void ovis_runtime_String_destroy(const struct TypeInfo* type_info, void* ptr) {
-  free(((struct ovis_runtime_String*)ptr)->data);
+  free(((ovis_runtime_String*)ptr)->data);
 }
 
 bool ovis_runtime_String_clone(const struct TypeInfo* type_info, const void* src, void* dst) {
-  const struct ovis_runtime_String* src_string = src;
-  struct ovis_runtime_String* dst_string = dst;
+  const ovis_runtime_String* src_string = src;
+  ovis_runtime_String* dst_string = dst;
 
   // We only allocated the necessary amount (TODO: should we?)
   dst_string->data = malloc(src_string->size);
@@ -35,7 +35,7 @@ bool ovis_runtime_String_clone(const struct TypeInfo* type_info, const void* src
 }
 
 void ovis_runtime_String_initialize_from_literal(const struct TypeInfo* string_type, void* ptr, const char* literal, int32_t length) {
-  struct ovis_runtime_String* string = ptr;
+  ovis_runtime_String* string = ptr;
   string->data = malloc(length);
   string->size = length;
   string->capacity = length;
@@ -43,5 +43,5 @@ void ovis_runtime_String_initialize_from_literal(const struct TypeInfo* string_t
 }
 
 bool ovis_runtime_String_p_get_size(const struct TypeInfo* string_type, const void* string, void* size) {
-  return ovis_runtime_Int_clone(&ovis_runtime_Int_type, &((const struct ovis_runtime_String*)string)->size, size);
+  return ovis_runtime_Int_clone(&ovis_runtime_Int_type, &((const ovis_runtime_String*)string)->size, size);
 }

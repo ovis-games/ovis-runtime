@@ -1,16 +1,28 @@
 {
   "module": "ovis/runtime",
   "version": "0.1",
-  "definitions": {
-    "Bool": { "Struct": {} },
-    "Int": { "Struct": {} },
-    "Float": { "Struct": {} },
-    "Vector2": { "Struct": {} },
-    "Vector3": { "Struct": {} },
-    "Vector4": { "Struct": {} },
-    "Matrix4x4": { "Struct": {} },
-    "Matrix3x4": { "Struct": {} },
-    "List": { "Struct": {} }
-  },
+  "definitions": [
+    {
+      "Struct": {
+        "name": "Int"
+      }
+    },
+    {
+      "Struct": {
+        "name": "String"
+      }
+    },
+    {
+      "Function": {
+        "name": "log",
+        "inputs": [
+          {
+            "name": "message",
+            "type": "String"
+          }
+        ]
+      }
+    }
+  ],
   "dependencies": []
 }

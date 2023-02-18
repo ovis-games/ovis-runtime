@@ -4,6 +4,7 @@
 std::unordered_map<std::string, JobFunction> JOBS;
 
 bool register_job(const char* id, JobFunction function) {
+  printf("registering job: %s\n", id);
   if (JOBS.contains(id)) {
     return false;
   }

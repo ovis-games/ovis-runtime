@@ -7,11 +7,11 @@
 extern "C" {
 #endif
 
-struct ovis_runtime_String {
+typedef struct {
   char* data;
   int32_t capacity;
   int32_t size;
-};
+} ovis_runtime_String;
 
 extern const struct TypeInfo ovis_runtime_String_type;
 void ovis_runtime_String_initialize(const struct TypeInfo* string_type, void* ptr);
