@@ -9,7 +9,31 @@
     },
     {
       "Struct": {
-        "name": "String"
+        "name": "Float"
+      }
+    },
+    {
+      "Struct": {
+        "name": "String",
+        "properties": [
+          {
+            "name": "size",
+            "type": "Int",
+            "get": true
+          }
+        ]
+      }
+    },
+    {
+      "Struct": {
+        "name": "Frame",
+        "properties": [
+          {
+            "name": "deltaTime",
+            "type": "Float",
+            "get": true
+          }
+        ]
       }
     },
     {
@@ -21,6 +45,30 @@
             "type": "String"
           }
         ]
+      }
+    },
+    {
+      "Function": {
+        "name": "int2Str",
+        "inputs": [
+          {
+            "name": "int",
+            "type": "Int"
+          }
+        ],
+        "output": "String"
+      }
+    },
+    {
+      "Function": {
+        "name": "float2Str",
+        "inputs": [
+          {
+            "name": "float",
+            "type": "Float"
+          }
+        ],
+        "output": "String"
       }
     }
   ],

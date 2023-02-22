@@ -6,7 +6,7 @@ extern "C" {
 
 #include <stdint.h>
 
-typedef bool(*JobFunction)();
+typedef bool(*JobFunction)(struct Scene*);
 struct Job {
   JobFunction function;
   const char* id;

@@ -3,7 +3,7 @@
 
 extern "C" {
 
-bool job() {
+bool job(struct Scene* scene) {
   emscripten_console_log("job()");
   return true;
 }

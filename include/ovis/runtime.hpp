@@ -1,8 +1,20 @@
 #pragma once
 
 #include "ovis/runtime.h"
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <utility>
+
+
+inline intptr_t max_align() {
+  return 1;
+}
+
+template <typename... T>
+intptr_t max_align(const TypeInfo* info, T&&... infos) {
+  return std::max(info->align, max_align(std::forward<T>(infos)...));
+}
 
 template <typename T = void>
 class Variable {

@@ -23,6 +23,9 @@ void ovis_runtime_String_initialize_from_literal(const struct TypeInfo* string_t
 
 bool ovis_runtime_String_p_get_size(const struct TypeInfo* string_type, const void* string, void* size);
 
+bool ovis_runtime_int2Str(const void* integer, void* str);
+bool ovis_runtime_float2Str(const void* number, void* str);
+
 #ifdef __cplusplus
 }
 #endif

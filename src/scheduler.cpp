@@ -8,8 +8,8 @@ Scheduler::Scheduler() {
   }
 }
 
-void Scheduler::run_jobs() {
+void Scheduler::run_jobs(struct Scene* scene) {
   for (const auto& job_function : m_jobs) {
-    job_function();
+    job_function(scene);
   }
 }

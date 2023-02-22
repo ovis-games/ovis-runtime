@@ -45,8 +45,10 @@ add_library(
   include/ovis/runtime/log.h src/log.c
   include/ovis/runtime/job.h src/job.cpp
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
+  include/ovis/runtime/frame.h src/frame.c
 
   src/scheduler.hpp src/scheduler.cpp
+  src/scene_components_storage.hpp src/scene_components_storage.cpp
   
   # include/ovis/runtime/application.hpp src/application.cpp
   # include/ovis/runtime/vm_bindings.hpp src/vm_bindings.cpp

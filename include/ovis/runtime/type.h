@@ -87,6 +87,38 @@ static inline bool clone_n(const struct TypeInfo* type, const void* src, void* d
   return true;
 }
 
+// static inline intptr_t max_align(const struct TypeInfo** types) {
+//   const struct TypeInfo** type = types;
+
+//   intptr_t max_align = 1;
+//   while (*type) {
+//     if ((*type)->align > max_align) {
+//       max_align = (*type)->align;
+//     }
+//     ++type;
+//   }
+
+//   return max_align;
+// }
+
+static inline intptr_t size(const struct TypeInfo** types) {
+  const struct TypeInfo** type = types;
+
+  intptr_t size = 0;
+  intptr_t max_align = 1;
+  while (*type) {
+    if ((*type)->align > max_align) {
+      max_align = (*type)->align;
+    }
+    size = round_up_to_alignment(size, (*type)->align);
+    size += (*type)->size;
+    ++type;
+  }
+  size = round_up_to_alignment(size, max_align);
+
+  return size;
+}
+
 // TODO: figure out alignment
 #define push_stack_var(type_ptr, name, type)                                   \
   {                                                                            \
