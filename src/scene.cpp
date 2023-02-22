@@ -17,12 +17,12 @@ bool ovis_runtime_deregister_scene_component_type(const char* component_id) {
 }
 
 struct Scene* ovis_scene_create() {
-  ovis_runtime_register_scene_component_type("ovis/runtime/Frame", &ovis_runtime_Frame_type);
+  ovis_runtime_register_scene_component_type("ovis/runtime/Frame", &mod__ovis__runtime__Frame_type);
   return new Scene();
 }
 
 void ovis_scene_tick(struct Scene* scene, float delta_time) {
-  ovis_runtime_Frame* frame = (ovis_runtime_Frame*)scene->scene_components_storage()->add("ovis/runtime/Frame");
+  mod__ovis__runtime__Frame* frame = (mod__ovis__runtime__Frame*)scene->scene_components_storage()->add("ovis/runtime/Frame");
   assert(frame);
   frame->delta_time = delta_time;
   scene->tick(delta_time);

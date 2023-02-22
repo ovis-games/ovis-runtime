@@ -13,7 +13,7 @@ bool foo(struct Scene*) {
 bool iterated = false;
 bool iterate_me(void** components) {
   void* x = components[0];
-  auto frame = (ovis_runtime_Frame*)components[0];
+  auto frame = (mod__ovis__runtime__Frame*)components[0];
   REQUIRE(frame->delta_time == 1337);
   iterated = true;
   return true;
@@ -27,7 +27,7 @@ bool iteration_test(struct Scene* scene) {
 }
 
 TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
-  ovis_runtime_register_scene_component_type("ovis/runtime/Frame", &ovis_runtime_Float_type);
+  ovis_runtime_register_scene_component_type("ovis/runtime/Frame", &mod__ovis__runtime__Float_type);
 
   SECTION("registering basic job") {
     REQUIRE(register_job("foo", &foo));

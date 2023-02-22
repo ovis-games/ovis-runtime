@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-bool ovis_runtime_log(const void* message);
+bool mod__ovis__runtime__log(const void* message);
 
 #ifdef __cplusplus
 }

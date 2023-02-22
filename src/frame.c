@@ -2,27 +2,27 @@
 
 #include <stdalign.h>
 
-const struct TypeInfo ovis_runtime_Frame_type = {
-  sizeof(ovis_runtime_Frame),
-  alignof(ovis_runtime_Frame),
-  ovis_runtime_Frame_initialize,
-  ovis_runtime_Frame_destroy,
-  ovis_runtime_Frame_clone,
+const struct TypeInfo mod__ovis__runtime__Frame_type = {
+  sizeof(mod__ovis__runtime__Frame),
+  alignof(mod__ovis__runtime__Frame),
+  mod__ovis__runtime__Frame_initialize,
+  mod__ovis__runtime__Frame_destroy,
+  mod__ovis__runtime__Frame_clone,
   0, NULL,
 };
 
-void ovis_runtime_Frame_initialize(const struct TypeInfo* type_info, void* ptr) {
-  memset(ptr, 0, sizeof(ovis_runtime_Frame));
+void mod__ovis__runtime__Frame_initialize(const struct TypeInfo* type_info, void* ptr) {
+  memset(ptr, 0, sizeof(mod__ovis__runtime__Frame));
 }
 
-void ovis_runtime_Frame_destroy(const struct TypeInfo* type_info, void* ptr) {}
+void mod__ovis__runtime__Frame_destroy(const struct TypeInfo* type_info, void* ptr) {}
 
-bool ovis_runtime_Frame_clone(const struct TypeInfo* type_info, const void* src, void* dst) {
-  memcpy(dst, src, sizeof(ovis_runtime_Frame));
+bool mod__ovis__runtime__Frame_clone(const struct TypeInfo* type_info, const void* src, void* dst) {
+  memcpy(dst, src, sizeof(mod__ovis__runtime__Frame));
   return true;
 }
 
-bool ovis_runtime_Frame_p_get_deltaTime(const struct TypeInfo* frame_type, const void* frame, void* delta_time) {
-  *(ovis_runtime_Float*)delta_time = ((ovis_runtime_Frame*)frame)->delta_time;
+bool mod__ovis__runtime__Frame_p_get_deltaTime(const struct TypeInfo* frame_type, const void* frame, void* delta_time) {
+  *(mod__ovis__runtime__Float*)delta_time = ((mod__ovis__runtime__Frame*)frame)->delta_time;
   return true;
 }

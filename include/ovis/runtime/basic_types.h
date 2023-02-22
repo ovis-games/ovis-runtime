@@ -10,29 +10,29 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 
-typedef bool ovis_runtime_Bool;
-void ovis_runtime_Bool_initialize(const struct TypeInfo* type_info, void* ptr);
-void ovis_runtime_Bool_destroy(const struct TypeInfo* type_info, void* ptr);
-bool ovis_runtime_Bool_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo ovis_runtime_Bool_type;
+typedef bool mod__ovis__runtime__Bool;
+void mod__ovis__runtime__Bool_initialize(const struct TypeInfo* type_info, void* ptr);
+void mod__ovis__runtime__Bool_destroy(const struct TypeInfo* type_info, void* ptr);
+bool mod__ovis__runtime__Bool_clone(const struct TypeInfo* type_info, const void* src, void* dst);
+extern const struct TypeInfo mod__ovis__runtime__Bool_type;
 
-typedef int32_t ovis_runtime_Int;
-void ovis_runtime_Int_initialize(const struct TypeInfo* type_info, void* ptr);
-void ovis_runtime_Int_destroy(const struct TypeInfo* type_info, void* ptr);
-bool ovis_runtime_Int_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo ovis_runtime_Int_type;
+typedef int32_t mod__ovis__runtime__Int;
+void mod__ovis__runtime__Int_initialize(const struct TypeInfo* type_info, void* ptr);
+void mod__ovis__runtime__Int_destroy(const struct TypeInfo* type_info, void* ptr);
+bool mod__ovis__runtime__Int_clone(const struct TypeInfo* type_info, const void* src, void* dst);
+extern const struct TypeInfo mod__ovis__runtime__Int_type;
 
-typedef float ovis_runtime_Float;
-void ovis_runtime_Float_initialize(const struct TypeInfo* type_info, void* ptr);
-void ovis_runtime_Float_destroy(const struct TypeInfo* type_info, void* ptr);
-bool ovis_runtime_Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo ovis_runtime_Float_type;
+typedef float mod__ovis__runtime__Float;
+void mod__ovis__runtime__Float_initialize(const struct TypeInfo* type_info, void* ptr);
+void mod__ovis__runtime__Float_destroy(const struct TypeInfo* type_info, void* ptr);
+bool mod__ovis__runtime__Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
+extern const struct TypeInfo mod__ovis__runtime__Float_type;
 
-typedef ovis_runtime_Float ovis_runtime_Vector3_Float[3];
-void ovis_runtime_Vector3_Float_initialize(const struct TypeInfo* type_info, void* ptr);
-void ovis_runtime_Vector3_Float_destroy(const struct TypeInfo* type_info, void* ptr);
-bool ovis_runtime_Vector3_Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo ovis_runtime_Vector3_Float_type;
+typedef mod__ovis__runtime__Float mod__ovis__runtime__Vector3_Float[3];
+void mod__ovis__runtime__Vector3_Float_initialize(const struct TypeInfo* type_info, void* ptr);
+void mod__ovis__runtime__Vector3_Float_destroy(const struct TypeInfo* type_info, void* ptr);
+bool mod__ovis__runtime__Vector3_Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
+extern const struct TypeInfo mod__ovis__runtime__Vector3_Float_type;
 
 #ifdef __cplusplus
 }
