@@ -1,5 +1,6 @@
 #pragma once
 
+#include "runtime/symbols.h"
 #include "runtime/type.h"
 #include "runtime/basic_types.h"
 #include "runtime/string.h"

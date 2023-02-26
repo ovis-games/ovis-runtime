@@ -79,6 +79,23 @@ add_library(
   # include/ovis/runtime/math.hpp src/math.cpp
 )
 
+get_target_property(RUNTIME_SOURCES ovis-runtime SOURCES)
+list(TRANSFORM RUNTIME_SOURCES REPLACE "^(.+)$" "${CMAKE_CURRENT_SOURCE_DIR}/\\1")
+
+find_package(Python COMPONENTS Interpreter)
+
+add_custom_target(
+  generate-module-file ALL
+  COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_module_file.py ${RUNTIME_SOURCES}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  DEPENDS ${RUNTIME_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/generate_module_file.py
+)
+
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/ovis--runtime.json
+  DESTINATION share
+)
+
 if (OVIS_EMSCRIPTEN)
   add_executable(ovis-runtime-emscripten src/emscripten.cpp)
   target_link_libraries(ovis-runtime-emscripten ovis-runtime)
@@ -90,7 +107,7 @@ if (OVIS_EMSCRIPTEN)
   target_compile_options(
     ovis-runtime
     PRIVATE
-      "-sMAIN_MODULE"
+      "-sMAIN_MODULE=1"
   )
   target_compile_options(
     ovis-runtime-emscripten
@@ -105,6 +122,7 @@ if (OVIS_EMSCRIPTEN)
       "-sMAIN_MODULE=1"
       "-sMODULARIZE"
       "-sEXPORT_NAME=createModule"
+      "-sEXPORT_ALL"
   )
   set_target_properties(
     ovis-runtime-emscripten
@@ -125,7 +143,9 @@ endif()
 install(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
   TYPE INCLUDE
-  FILES_MATCHING PATTERN "*.h"
+  FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "*.hpp"
 )
 
 add_library(ovis::runtime ALIAS ovis-runtime)

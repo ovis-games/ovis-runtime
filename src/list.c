@@ -19,7 +19,7 @@ static const struct TypeInfo* mod__ovis__runtime__List_element_type(const struct
 
 static bool mod__ovis__runtime__List_grow(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list) {
   // Use a growth rate of 1.5.
-  const mod__ovis__runtime__Int new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
+  const int32_t new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
   void* new_data = realloc(list->data, new_capacity * type_stride(mod__ovis__runtime__List_element_type(list_type)));
   if (new_data == NULL) {
     RETURN_ERROR("out of memory");
@@ -29,7 +29,7 @@ static bool mod__ovis__runtime__List_grow(const struct TypeInfo* list_type, stru
   return true;
 }
 
-static void* list_element_ptr(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, mod__ovis__runtime__Int index) {
+static void* list_element_ptr(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, int32_t index) {
   return offset_mutable_ptr(list->data, index * type_stride(mod__ovis__runtime__List_element_type(list_type)));
 }
 
@@ -115,13 +115,13 @@ bool mod__ovis__runtime__List_m_add(const struct TypeInfo* list_type, struct mod
   return true;
 }
 
-bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const mod__ovis__runtime__Int* index) {
+bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int32_t* index) {
   void* element_to_remove = list_element_ptr(list_type, list, *index);
   const struct TypeInfo* element_type = mod__ovis__runtime__List_element_type(list_type);
   element_type->destroy(element_type, element_to_remove);
 
-  const mod__ovis__runtime__Int elements_after_removed = list->size - *index - 1;
-  const mod__ovis__runtime__Int stride = type_stride(element_type);
+  const int32_t elements_after_removed = list->size - *index - 1;
+  const int32_t stride = type_stride(element_type);
 
   memmove(element_to_remove, offset_ptr(element_to_remove, stride), elements_after_removed * stride);
   list->size -= 1;
@@ -129,7 +129,7 @@ bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct 
   return true;
 }
 
-bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const mod__ovis__runtime__Int* first_index, const mod__ovis__runtime__Int* second_index) {
+bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int32_t* first_index, const int32_t* second_index) {
   const struct TypeInfo* element_type = mod__ovis__runtime__List_element_type(list_type);
   uint8_t temp[element_type->size];
   void* first_element = list_element_ptr(list_type, list, *first_index);

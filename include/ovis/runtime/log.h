@@ -3,12 +3,13 @@
 #include <stdbool.h>
 
 #include "ovis/runtime/string.h"
+#include "ovis/runtime/symbols.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-bool mod__ovis__runtime__log(const void* message);
+DECLARE_FUNCTION(FUNCTION(ovis, runtime, log), PARAMETER(message, TYPE(ovis, runtime, String)));
 
 #ifdef __cplusplus
 }

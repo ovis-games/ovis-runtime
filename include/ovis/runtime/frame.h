@@ -8,15 +8,12 @@ extern "C" {
 #endif
 
 typedef struct {
-  mod__ovis__runtime__Float delta_time;
-} mod__ovis__runtime__Frame;
+  float delta_time;
+} TYPE(ovis, runtime, Frame);
 
-extern const struct TypeInfo mod__ovis__runtime__Frame_type;
-void mod__ovis__runtime__Frame_initialize(const struct TypeInfo* string_type, void* ptr);
-void mod__ovis__runtime__Frame_destroy(const struct TypeInfo* string_type, void* ptr);
-bool mod__ovis__runtime__Frame_clone(const struct TypeInfo* string_type, const void* src, void* dst);
+DECLARE_TYPE(ovis, runtime, Frame);
 
-bool mod__ovis__runtime__Frame_p_get_deltaTime(const struct TypeInfo* string_type, const void* frame, void* delta_time);
+DECLARE_PROPERTY_TYPE_GETTER(TYPE(ovis, runtime, Frame), deltaTime, TYPE(ovis, runtime, Float));
 
 #ifdef __cplusplus
 }

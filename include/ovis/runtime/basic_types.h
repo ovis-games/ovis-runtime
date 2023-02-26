@@ -10,29 +10,51 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 
-typedef bool mod__ovis__runtime__Bool;
-void mod__ovis__runtime__Bool_initialize(const struct TypeInfo* type_info, void* ptr);
-void mod__ovis__runtime__Bool_destroy(const struct TypeInfo* type_info, void* ptr);
-bool mod__ovis__runtime__Bool_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo mod__ovis__runtime__Bool_type;
+TYPEDEF(bool, TYPE(ovis, runtime, Bool));
+DECLARE_TYPE(ovis, runtime, Bool);
 
-typedef int32_t mod__ovis__runtime__Int;
-void mod__ovis__runtime__Int_initialize(const struct TypeInfo* type_info, void* ptr);
-void mod__ovis__runtime__Int_destroy(const struct TypeInfo* type_info, void* ptr);
-bool mod__ovis__runtime__Int_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo mod__ovis__runtime__Int_type;
+TYPEDEF(int32_t, TYPE(ovis, runtime, Int));
+DECLARE_TYPE(ovis, runtime, Int);
 
-typedef float mod__ovis__runtime__Float;
-void mod__ovis__runtime__Float_initialize(const struct TypeInfo* type_info, void* ptr);
-void mod__ovis__runtime__Float_destroy(const struct TypeInfo* type_info, void* ptr);
-bool mod__ovis__runtime__Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo mod__ovis__runtime__Float_type;
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), random,
+    PARAMETER(min, TYPE(ovis, runtime, Int)),
+    PARAMETER(max, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+);
 
-typedef mod__ovis__runtime__Float mod__ovis__runtime__Vector3_Float[3];
-void mod__ovis__runtime__Vector3_Float_initialize(const struct TypeInfo* type_info, void* ptr);
-void mod__ovis__runtime__Vector3_Float_destroy(const struct TypeInfo* type_info, void* ptr);
-bool mod__ovis__runtime__Vector3_Float_clone(const struct TypeInfo* type_info, const void* src, void* dst);
-extern const struct TypeInfo mod__ovis__runtime__Vector3_Float_type;
+TYPEDEF(float, TYPE(ovis, runtime, Float));
+DECLARE_TYPE(ovis, runtime, Float);
+
+TYPEDEF_ALIGNED_ARRAY(int32_t, 8, 2, TYPE(ovis, runtime, Vec2I));
+DECLARE_TYPE(ovis, runtime, Vec2I);
+
+TYPEDEF_ALIGNED_ARRAY(float, 8, 2, TYPE(ovis, runtime, Vec2F));
+DECLARE_TYPE(ovis, runtime, Vec2F);
+
+TYPEDEF_ALIGNED_ARRAY(int32_t, 16, 3, TYPE(ovis, runtime, Vec3I));
+DECLARE_TYPE(ovis, runtime, Vec3I);
+
+TYPEDEF_ALIGNED_ARRAY(float, 16, 3, TYPE(ovis, runtime, Vec3F));
+DECLARE_TYPE(ovis, runtime, Vec3F);
+
+TYPEDEF_ALIGNED_ARRAY(int32_t, 16, 4, TYPE(ovis, runtime, Vec4I));
+DECLARE_TYPE(ovis, runtime, Vec4I);
+
+TYPEDEF_ALIGNED_ARRAY(float, 16, 4, TYPE(ovis, runtime, Vec4F));
+DECLARE_TYPE(ovis, runtime, Vec4F);
+
+typedef TYPE(ovis, runtime, Vec2F) TYPE(ovis, runtime, Mat2x2F)[2];
+DECLARE_TYPE(ovis, runtime, Mat2x2F);
+
+typedef TYPE(ovis, runtime, Vec3F) TYPE(ovis, runtime, Mat3x3F)[3];
+DECLARE_TYPE(ovis, runtime, Mat3x3F);
+
+typedef TYPE(ovis, runtime, Vec4F) TYPE(ovis, runtime, Mat3x4F)[3];
+DECLARE_TYPE(ovis, runtime, Mat3x4F);
+
+typedef TYPE(ovis, runtime, Vec4F) TYPE(ovis, runtime, Mat4x4F)[4];
+DECLARE_TYPE(ovis, runtime, Mat4x4F);
 
 #ifdef __cplusplus
 }

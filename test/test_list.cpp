@@ -45,14 +45,14 @@ TEST_CASE("value can be added and removed to list", "[ovis][runtime][mod__ovis__
   REQUIRE(list->capacity == 0);
   REQUIRE(list->data == NULL);
 
-  mod__ovis__runtime__Int val = 42;
+  int32_t val = 42;
   REQUIRE(mod__ovis__runtime__List_m_add(int_list_type, list, &val));
 
   REQUIRE(list->size == 1);
   REQUIRE(list->capacity > 0);
   REQUIRE(list->data != NULL);
 
-  mod__ovis__runtime__Int remove_index = 0;
+  int32_t remove_index = 0;
   REQUIRE(mod__ovis__runtime__List_m_remove(int_list_type, list, &remove_index));
 
   REQUIRE(list->size == 0);

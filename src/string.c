@@ -5,24 +5,15 @@
 #include <string.h>
 #include <stdalign.h>
 
-const struct TypeInfo mod__ovis__runtime__String_type = {
-  sizeof(mod__ovis__runtime__String),
-  alignof(mod__ovis__runtime__String),
-  mod__ovis__runtime__String_initialize,
-  mod__ovis__runtime__String_destroy,
-  mod__ovis__runtime__String_clone,
-  0, NULL,
-};
+TYPE_INFO_IMPL(TYPE(ovis, runtime, String));
 
-void mod__ovis__runtime__String_initialize(const struct TypeInfo* type_info, void* ptr) {
-  memset(ptr, 0, sizeof(mod__ovis__runtime__String));
-}
+TYPE_INITIALIZE_IMPL(TYPE(ovis, runtime, String));
 
-void mod__ovis__runtime__String_destroy(const struct TypeInfo* type_info, void* ptr) {
+TYPE_DESTROY_DECL(TYPE(ovis, runtime, String)) {
   free(((mod__ovis__runtime__String*)ptr)->data);
 }
 
-bool mod__ovis__runtime__String_clone(const struct TypeInfo* type_info, const void* src, void* dst) {
+TYPE_CLONE_DECL(TYPE(ovis, runtime, String)) {
   const mod__ovis__runtime__String* src_string = src;
   mod__ovis__runtime__String* dst_string = dst;
 
@@ -43,24 +34,29 @@ void mod__ovis__runtime__String_initialize_from_literal(const struct TypeInfo* s
   memcpy(string->data, literal, length);
 }
 
-bool mod__ovis__runtime__String_p_get_size(const struct TypeInfo* string_type, const void* string, void* size) {
-  return mod__ovis__runtime__Int_clone(&mod__ovis__runtime__Int_type, &((const mod__ovis__runtime__String*)string)->size, size);
-}
 
-bool mod__ovis__runtime__int2Str(const void* input, void* str) {
-  const int* integer = input;
-  int string_length = snprintf(NULL, 0, "%d", *integer);
+TYPE_PROPERTY_GETTER_IMPL(TYPE(ovis, runtime, String), size, TYPE(ovis, runtime, Int))
+
+FUNCTION_IMPL(
+    FUNCTION(ovis, runtime, int2Str),
+    PARAMETER(number, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, String))
+) {
+  int string_length = snprintf(NULL, 0, "%d", *number);
   char string[string_length + 1];
-  snprintf(string, string_length + 1, "%d", *integer);
-  mod__ovis__runtime__String_initialize_from_literal(&mod__ovis__runtime__String_type, str, string, string_length);
+  snprintf(string, string_length + 1, "%d", *number);
+  mod__ovis__runtime__String_initialize_from_literal(&mod__ovis__runtime__String_type, _output, string, string_length);
   return true;
 }
 
-bool mod__ovis__runtime__float2Str(const void* number, void* str) {
-  const float* num = number;
-  int string_length = snprintf(NULL, 0, "%f", *num);
+FUNCTION_IMPL(
+    FUNCTION(ovis, runtime, float2Str),
+    PARAMETER(number, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, String))
+) {
+  int string_length = snprintf(NULL, 0, "%f", *number);
   char string[string_length + 1];
-  snprintf(string, string_length + 1, "%f", *num);
-  mod__ovis__runtime__String_initialize_from_literal(&mod__ovis__runtime__String_type, str, string, string_length);
+  snprintf(string, string_length + 1, "%f", *number);
+  mod__ovis__runtime__String_initialize_from_literal(&mod__ovis__runtime__String_type, _output, string, string_length);
   return true;
 }

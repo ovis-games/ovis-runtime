@@ -21,8 +21,8 @@ void mod__ovis__runtime__List_destroy(const struct TypeInfo* list_type, void* pt
 bool mod__ovis__runtime__List_clone(const struct TypeInfo* list_type, const void* src, void* dst);
 
 bool mod__ovis__runtime__List_m_add(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const void* value);
-bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const mod__ovis__runtime__Int* index);
-bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const mod__ovis__runtime__Int* first_index, const mod__ovis__runtime__Int* second_index);
+bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int* index);
+bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int* first_index, const int* second_index);
 
 #ifdef __cplusplus
 }
