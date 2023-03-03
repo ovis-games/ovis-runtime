@@ -18,7 +18,6 @@ DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x3F));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x4F));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat4x4F));
 
-
 TYPE_FUNCTION_IMPL(
     TYPE(ovis, runtime, Int), random,
     PARAMETER(min, TYPE(ovis, runtime, Int)),

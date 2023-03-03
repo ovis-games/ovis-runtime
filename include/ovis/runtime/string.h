@@ -22,21 +22,14 @@ void mod__ovis__runtime__String_initialize_from_literal(const struct TypeInfo* s
 
 DECLARE_PROPERTY_TYPE_GETTER(TYPE(ovis, runtime, String), size, TYPE(ovis, runtime, Int));
 
-DECLARE_FUNCTION(
-    FUNCTION(ovis, runtime, foo),
-    PARAMETER(number, TYPE(ovis, runtime, Int)),
-    PARAMETER(n, TYPE(ovis, runtime, Int)),
-    RESULT(TYPE(ovis, runtime, String))
-);
-
-DECLARE_FUNCTION(
-    FUNCTION(ovis, runtime, int2Str),
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, String), fromInt,
     PARAMETER(number, TYPE(ovis, runtime, Int)),
     RESULT(TYPE(ovis, runtime, String))
 );
 
-DECLARE_FUNCTION(
-    FUNCTION(ovis, runtime, float2Str),
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, String), fromFloat,
     PARAMETER(number, TYPE(ovis, runtime, Float)),
     RESULT(TYPE(ovis, runtime, String))
 );
