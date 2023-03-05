@@ -13,6 +13,33 @@ extern "C" {
 TYPEDEF(bool, TYPE(ovis, runtime, Bool));
 DECLARE_TYPE(ovis, runtime, Bool);
 
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Bool), not,
+    PARAMETER(value, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Bool), and,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Bool), or,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Bool), xor,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
+
 TYPEDEF(int32_t, TYPE(ovis, runtime, Int));
 DECLARE_TYPE(ovis, runtime, Int);
 
@@ -23,8 +50,64 @@ DECLARE_TYPE_FUNCTION(
     RESULT(TYPE(ovis, runtime, Int))
 );
 
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), add,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), sub,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), mul,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), div,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+);
+
 TYPEDEF(float, TYPE(ovis, runtime, Float));
 DECLARE_TYPE(ovis, runtime, Float);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Float), add,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Float), sub,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Float), mul,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Float), div,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+);
 
 TYPEDEF_ALIGNED_ARRAY(int32_t, 8, 2, TYPE(ovis, runtime, Vec2I));
 DECLARE_TYPE(ovis, runtime, Vec2I);

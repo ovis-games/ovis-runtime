@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdalign.h>
 
+#include "ovis/runtime/error.h"
+
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Bool));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Int));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Float));
@@ -18,6 +20,46 @@ DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x3F));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x4F));
 DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat4x4F));
 
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Bool), not,
+    PARAMETER(value, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+  *_output = !*value;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Bool), and,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+  *_output = *lhs && *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Bool), or,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+  *_output = *lhs || *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Bool), xor,
+    PARAMETER(lhs, TYPE(ovis, runtime, Bool)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+  *_output = *lhs ^ *rhs;
+  return true;
+}
+
 TYPE_FUNCTION_IMPL(
     TYPE(ovis, runtime, Int), random,
     PARAMETER(min, TYPE(ovis, runtime, Int)),
@@ -26,5 +68,88 @@ TYPE_FUNCTION_IMPL(
 ) {
   int32_t n = *max - *min;
   *_output = *min + rand() % n;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Int), add,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+) {
+  *_output = *lhs + *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Int), sub,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+) {
+  *_output = *lhs - *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Int), mul,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+) {
+  *_output = *lhs * *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Int), div,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Int))
+) {
+  if (*rhs == 0) {
+    RETURN_ERROR("cannot divide by 0");
+  }
+  *_output = *lhs / *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Float), add,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+) {
+  *_output = *lhs + *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Float), sub,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+) {
+  *_output = *lhs - *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Float), mul,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+) {
+  *_output = *lhs * *rhs;
+  return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Float), div,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Float))
+) {
+  *_output = *lhs / *rhs;
   return true;
 }
