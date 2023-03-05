@@ -50,34 +50,6 @@ add_library(
 
   src/scheduler.hpp src/scheduler.cpp
   src/scene_components_storage.hpp src/scene_components_storage.cpp
-  
-  # include/ovis/runtime/application.hpp src/application.cpp
-  # include/ovis/runtime/vm_bindings.hpp src/vm_bindings.cpp
-  # include/ovis/runtime/main_vm.hpp src/main_vm.cpp
-  # include/ovis/runtime/event_storage.hpp src/event_storage.cpp
-  # include/ovis/runtime/json_schema.hpp src/json_schema.cpp
-  # include/ovis/runtime/scheduler.hpp src/scheduler.cpp
-  # include/ovis/runtime/job.hpp src/job.cpp
-  # include/ovis/runtime/resource.hpp src/resource.cpp
-  # include/ovis/runtime/scene.hpp src/scene.cpp
-  # include/ovis/runtime/component_storage.hpp src/component_storage.cpp
-  # include/ovis/runtime/scene_viewport.hpp src/scene_viewport.cpp
-  # include/ovis/runtime/entity.hpp src/entity.cpp
-  # include/ovis/runtime/scene_object_animation.hpp src/scene_object_animation.cpp
-  # include/ovis/runtime/animator.hpp src/animator.cpp
-  # include/ovis/runtime/animator_controller.hpp src/animator_controller.cpp
-  # include/ovis/runtime/camera.hpp src/camera.cpp
-  # include/ovis/runtime/transform.hpp src/transform.cpp
-  # include/ovis/runtime/asset_library.hpp src/asset_library.cpp
-  # include/ovis/runtime/vector_types.hpp src/vector_types.cpp
-  # include/ovis/runtime/vector.hpp src/vector2.cpp src/vector3.cpp
-  # include/ovis/runtime/color_type.hpp src/color_type.cpp
-  # include/ovis/runtime/color.hpp src/color.cpp
-  # include/ovis/runtime/matrix_types.hpp src/matrix_types.cpp
-  # include/ovis/runtime/matrix.hpp src/matrix.cpp
-  # include/ovis/runtime/math_operations.hpp src/math_operations.cpp
-  # include/ovis/runtime/intersection.hpp src/intersection.cpp
-  # include/ovis/runtime/math.hpp src/math.cpp
 )
 
 get_target_property(RUNTIME_SOURCES ovis-runtime SOURCES)
