@@ -46,6 +46,7 @@ add_library(
   include/ovis/runtime/job.h src/job.cpp
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
   include/ovis/runtime/frame.h src/frame.c
+  include/ovis/runtime/canvas.h src/canvas.cpp
 
   src/scheduler.hpp src/scheduler.cpp
   src/scene_components_storage.hpp src/scene_components_storage.cpp
