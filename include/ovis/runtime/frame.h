@@ -7,9 +7,10 @@
 extern "C" {
 #endif
 
-typedef struct {
+struct Frame {
   float delta_time;
-} TYPE(ovis, runtime, Frame);
+};
+TYPEDEF(struct Frame, TYPE(ovis, runtime, Frame));
 
 DECLARE_TYPE(ovis, runtime, Frame);
 
