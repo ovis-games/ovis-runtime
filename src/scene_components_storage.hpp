@@ -1,17 +1,32 @@
 #pragma once
 
+#include "ovis/runtime/resource.h"
 #include "ovis/runtime/type.h"
 #include <unordered_map>
 #include <string>
 
-class SceneComponentsStorage final {
+class ComponentStorage {
   public:
-    SceneComponentsStorage();
-    ~SceneComponentsStorage();
+    ComponentStorage(const Resource* resource) : m_resource(resource) {}
+    virtual ~ComponentStorage() = default;
 
-    void* add(const char* component_id);
-    void* get(const char* component_id);
+    const Resource* resource() const { return m_resource; }
 
   private:
-    std::unordered_map<std::string, void*> m_scene_components;
+    const Resource* m_resource;
+};
+
+class SceneComponentStorage final : public ComponentStorage {
+  public:
+    SceneComponentStorage(const Resource* resource);
+    ~SceneComponentStorage() override;
+
+    const void* get() const { return m_component_ptr; }
+    void* get() { return m_component_ptr; }
+
+    void* emplace();
+    void reset();
+
+  private:
+    void* m_component_ptr;
 };

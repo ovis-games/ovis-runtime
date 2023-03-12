@@ -15,9 +15,9 @@
 #define FUNCTION_IMPL(func, ...) bool func(__VA_ARGS__)
 
 #define TYPE(owner, project, type) CONCAT3(MODULE(owner, project), __, type)
-#define TYPE_PTR(type) type ## _ptr
-#define TYPE_CONST_PTR(type) type ## _cptr
-#define TYPE_FROZEN(type) type ## _frozen
+#define TYPE_PTR(type) CONCAT(type, _ptr)
+#define TYPE_CONST_PTR(type) CONCAT(type, _cptr)
+#define TYPE_FROZEN(type) CONCAT(type, _frozen)
 #define TYPE_IS_FROZEN(type) defined(type ## _frozen)
 
 #define TYPE_INITIALIZE(type) type ## _initialize
@@ -35,7 +35,7 @@
 #define TYPE_CLONE_IMPL(type) TYPE_CLONE_DECL(type) { memcpy(dst, src, sizeof(type)); return true; }
 #define CLONE(type, src, dst) TYPE_CLONE(type)(&TYPE_INFO(type), (src), (dst))
 
-#define TYPE_INFO(type) type ## _type
+#define TYPE_INFO(type) CONCAT(type, _type)
 #define SIZE_OF(type) TYPE_INFO(type).size
 #define ALIGN_OF(type) TYPE_INFO(type).align
 #define TYPE_INFO_DECL(type) extern const struct TypeInfo TYPE_INFO(type)
@@ -74,6 +74,17 @@
   TYPE_DESTROY_IMPL(type); \
   TYPE_CLONE_IMPL(type); \
   TYPE_INFO_IMPL(type)
+
+#define RESOURCE_ID(type) CONCAT(type, _resource_id)
+#define SCENE_COMPONENT(type) \
+  extern int32_t RESOURCE_ID(type)
+
+ // TODO: what if register_job() fails?
+#define SCENE_COMPONENT_IMPL(owner, project, type) \
+  int32_t RESOURCE_ID(TYPE(owner, project, type)); \
+  __attribute__((constructor)) void CONCAT(TYPE(owner, project, type), _resource_registration)() { \
+    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, RESOURCE_KIND_SCENE_COMPONENT, &TYPE_INFO(TYPE(owner, project, type)))->id; \
+  }
 
 #define TYPE_PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
 #define TYPE_PROPERTY_GETTER_DECL(type, property_name) bool TYPE_PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, const void* object, void* _output)
