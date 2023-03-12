@@ -43,6 +43,7 @@ add_library(
   include/ovis/runtime/string.h src/string.c
   include/ovis/runtime/list.h src/list.c
   include/ovis/runtime/log.h src/log.c
+  include/ovis/runtime/resource.h src/resource.hpp src/resource.cpp
   include/ovis/runtime/job.h src/job.cpp
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
   include/ovis/runtime/frame.h src/frame.c
