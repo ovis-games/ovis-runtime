@@ -3,8 +3,8 @@
 
 Scheduler::Scheduler() {
   m_jobs.reserve(JOBS.size());
-  for (const auto& [name, function] : JOBS) {
-    m_jobs.push_back(function);
+  for (const auto& [name, job] : JOBS) {
+    m_jobs.push_back(job.function);
   }
 }
 

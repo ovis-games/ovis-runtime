@@ -1,32 +1,40 @@
 #include "ovis/runtime/job.h"
 #include "job.hpp"
 
-std::unordered_map<std::string, JobFunction> JOBS;
+std::unordered_map<std::string, Job> JOBS;
 
-bool register_job(const char* id, JobFunction function) {
-  printf("registering job: %s\n", id);
-  if (JOBS.contains(id)) {
+bool register_job(const char* name, JobFunction function, int32_t resource_access_count, const ResourceAccess resource_access[]) {
+  if (JOBS.contains(name)) {
     return false;
   }
 
-  JOBS.insert(std::make_pair(id, function));
+  printf("registering job: %s\n", name);
+  Job job {
+    .name = name,
+    .function = function,
+    .resource_access_count = 0,
+    .resource_access = nullptr,
+    .dependency_count = 0,
+    .dependencies = nullptr,
+  };
+  JOBS.insert(std::make_pair(name, job));
   return true;
 }
 
-JobFunction get_job(const char* id) {
-  const auto job = JOBS.find(id);
+const Job* get_job(const char* name) {
+  const auto job = JOBS.find(name);
   if (job == JOBS.end()) {
     return nullptr;
   } else {
-    return job->second;
+    return &job->second;
   }
 }
 
-bool deregister_job(const char* id) {
-  if (!JOBS.contains(id)) {
+bool deregister_job(const char* name) {
+  if (!JOBS.contains(name)) {
     return false;
   }
 
-  JOBS.erase(id);
+  JOBS.erase(name);
   return true;
 }

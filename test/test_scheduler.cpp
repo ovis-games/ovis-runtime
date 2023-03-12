@@ -22,17 +22,15 @@ bool iterate_me(void** components) {
 bool iteration_test_called = false;
 bool iteration_test(struct Scene* scene) {
   iteration_test_called = true;
-  const char* components[] = { "ovis/runtime/Frame" };
+  const int32_t components[] = { RESOURCE_ID(TYPE(ovis, runtime, Frame)) };
   return ovis_scene_iterate(scene, components, 1, iterate_me);
 }
 
 TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
-  ovis_runtime_register_scene_component_type("ovis/runtime/Frame", &mod__ovis__runtime__Float_type);
-
   SECTION("registering basic job") {
-    REQUIRE(register_job("foo", &foo));
-    REQUIRE(get_job("foo") == &foo);
-    REQUIRE(!register_job("foo", &foo));
+    REQUIRE(register_job("foo", &foo, 0, nullptr));
+    REQUIRE(get_job("foo")->function == &foo);
+    REQUIRE(!register_job("foo", &foo, 0, nullptr));
     Scene* scene = ovis_scene_create();
     REQUIRE(scene != nullptr);
 
@@ -42,11 +40,12 @@ TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
 
     ovis_scene_destroy(scene);
     REQUIRE(deregister_job("foo"));
+    REQUIRE(get_job("foo") == nullptr);
   }
 
   SECTION("test scene iteration") {
-    REQUIRE(register_job("iteration_test", &iteration_test));
-    REQUIRE(get_job("iteration_test") == &iteration_test);
+    REQUIRE(register_job("iteration_test", &iteration_test, 0, nullptr));
+    REQUIRE(get_job("iteration_test")->function == &iteration_test);
     Scene* scene = ovis_scene_create();
     REQUIRE(scene != nullptr);
 

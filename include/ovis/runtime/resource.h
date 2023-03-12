@@ -6,20 +6,35 @@
 extern "C" {
 #endif
 
-
 typedef enum {
   RESOURCE_ACCESS_READ = 1,
   RESOURCE_ACCESS_WRITE = 2,
   RESOURCE_ACCESS_READ_WRITE = RESOURCE_ACCESS_READ | RESOURCE_ACCESS_WRITE,
+} ResourceAccessKind;
+
+typedef struct {
+  const char* resource_name;
+  ResourceAccessKind access;
 } ResourceAccess;
 
 typedef enum {
-  SCENE_COMPONENT,
-  VIEWPORT_COMPONENT,
+  RESOURCE_KIND_SCENE_COMPONENT,
+  RESOURCE_KIND_VIEWPORT_COMPONENT,
 } ResourceKind;
 
-bool ovis_runtime_register_resource(const char* resource_name, ResourceKind resource_kind, const struct TypeInfo* resource_type);
-bool ovis_runtime_deregister_resource(const char* resource_name);
+typedef int32_t ResourceId;
+
+typedef struct {
+  ResourceId id;
+  const char* name;
+  ResourceKind kind;
+  const struct TypeInfo* type;
+} Resource;
+
+Resource* register_resource(const char* name, ResourceKind kind, const struct TypeInfo* type);
+bool deregister_resource(ResourceId id);
+const Resource* get_resource(ResourceId id);
+const Resource* get_resource_by_name(const char* name);
 
 #ifdef __cplusplus
 }

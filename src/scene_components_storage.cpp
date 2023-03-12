@@ -3,34 +3,25 @@
 #include "scene.hpp"
 #include <cstdlib>
 
-SceneComponentsStorage::SceneComponentsStorage() {
+SceneComponentStorage::SceneComponentStorage(const Resource* resource) : ComponentStorage(resource), m_component_ptr(nullptr) {}
+
+SceneComponentStorage::~SceneComponentStorage() {
+  reset();
 }
 
-SceneComponentsStorage::~SceneComponentsStorage() {
-}
-
-void* SceneComponentsStorage::add(const char* component_id) {
-  auto component = m_scene_components.find(component_id);
-  if (component == m_scene_components.end()) {
-    auto scene_component = SCENE_COMPONENTS.find(component_id);
-    if (scene_component == SCENE_COMPONENTS.end()) {
-      return nullptr;
-    } else {
-      auto component = std::malloc(scene_component->second->size);
-      scene_component->second->initialize(scene_component->second, component);
-      m_scene_components.insert(std::make_pair(component_id, component));
-      return component;
-    }
-  } else {
-    return component->second;
+void* SceneComponentStorage::emplace() {
+  if (m_component_ptr == nullptr) {
+    m_component_ptr = aligned_alloc(resource()->type->align, resource()->type->size);
+    resource()->type->initialize(resource()->type, m_component_ptr);
   }
+  return m_component_ptr;
 }
 
-void* SceneComponentsStorage::get(const char* component_id) {
-  auto component = m_scene_components.find(component_id);
-  if (component == m_scene_components.end()) {
-    return nullptr;
-  } else {
-    return component->second;
+void SceneComponentStorage::reset() {
+  if (m_component_ptr == nullptr) {
+    return;
   }
+
+  resource()->type->destroy(resource()->type, m_component_ptr);
+  free(m_component_ptr); // free_sized() is only available in C
 }

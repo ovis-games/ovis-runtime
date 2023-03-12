@@ -13,6 +13,7 @@ struct Frame {
 TYPEDEF(struct Frame, TYPE(ovis, runtime, Frame));
 
 DECLARE_TYPE(ovis, runtime, Frame);
+SCENE_COMPONENT(TYPE(ovis, runtime, Frame));
 
 DECLARE_PROPERTY_TYPE_GETTER(TYPE(ovis, runtime, Frame), deltaTime, TYPE(ovis, runtime, Float));
 

@@ -1,13 +1,10 @@
 #pragma once
 
-#include <unordered_map>
+#include <deque>
 #include <string>
 
 #include "ovis/runtime/resource.h"
+#include "versioned_index_id.hpp"
 
-struct Resource {
-  ResourceKind kind;
-  const TypeInfo* type;
-};
-
-extern std::unordered_map<std::string, Resource> RESOURCES;
+extern std::deque<Resource> RESOURCES;
+using ResourceIdType = VersionedIndexId<>;

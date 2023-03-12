@@ -1,11 +1,58 @@
 #include "resource.hpp"
 
-std::unordered_map<std::string, Resource> RESOURCES;
+std::deque<Resource> RESOURCES;
 
-bool ovis_runtime_register_resource(const char* resource_name, ResourceKind resource_kind, const struct TypeInfo* resource_type) {
-  return RESOURCES.insert(std::make_pair(resource_name, Resource{ resource_kind, resource_type })).second;
+Resource* register_resource(const char* name, ResourceKind kind, const struct TypeInfo* type) {
+  if (get_resource_by_name(name) != nullptr) {
+    return nullptr;
+  }
+
+  for (auto& resource : RESOURCES) {
+    if (resource.name == nullptr) {
+      resource.name = name;
+      resource.kind = kind;
+      resource.type = type;
+      return &resource;
+    }
+  }
+
+  printf("registering resource: %s\n", name);
+  RESOURCES.push_back(Resource {
+    .id = ResourceIdType::create(RESOURCES.size()),
+    .name = name,
+    .kind = kind,
+    .type = type,
+  });
+
+  return &RESOURCES.back();
 }
 
-bool ovis_runtime_deregister_resource(const char* resource_name) {
-  return RESOURCES.erase(resource_name) == 1;
+bool deregister_resource(ResourceId id) {
+  const auto index = ResourceIdType::index(id);
+  if (index >= RESOURCES.size() || RESOURCES[index].id != id) {
+    return false;
+  }
+
+  RESOURCES[index].name = nullptr;
+  RESOURCES[index].type = nullptr;
+  RESOURCES[index].id = ResourceIdType::increase_version(RESOURCES[index].id);
+  return true;
+}
+
+const Resource* get_resource(ResourceId id) {
+  const auto index = ResourceIdType::index(id);
+  if (index >= RESOURCES.size() || RESOURCES[index].id != id) {
+    return nullptr;
+  } else {
+    return &RESOURCES[index];
+  }
+}
+
+const Resource* get_resource_by_name(const char* name) {
+  for (const auto& resource : RESOURCES) {
+    if (resource.name == name) {
+      return &resource;
+    }
+  }
+  return nullptr;
 }
