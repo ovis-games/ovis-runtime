@@ -17,6 +17,7 @@ exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
 exprs["type_declaration"] = "DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
 exprs["type_property_getter"] = "DECLARE_PROPERTY_TYPE_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_property_setter"] = "DECLARE_PROPERTY_TYPE_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["parameter"] = "PARAMETER\s*\(\s*(\w+)\s*,\s*{type_reference}\s*\)".format_map(exprs)
 exprs["function_reference"] = "FUNCTION\s*{reference}".format_map(exprs)
@@ -79,6 +80,11 @@ for f in files:
                 "declarations": []
             }
         modules[module]["declarations"].append(create_type_decl(m[3]))
+
+    for m in re.finditer(exprs["scene_component"], content):
+        module = "{}/{}".format(m[1], m[2])
+        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
+        type_["resource"] = "SceneComponent"
 
     for m in re.finditer(exprs["type_property_getter"], content):
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
