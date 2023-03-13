@@ -1,6 +1,5 @@
 #include "catch2/catch_test_macros.hpp"
 #include "ovis/runtime/basic_types.h"
-#include "ovis/runtime/frame.h"
 #include "ovis/runtime/job.h"
 #include "ovis/runtime/scene.h"
 
@@ -13,8 +12,8 @@ bool foo(struct Scene*) {
 bool iterated = false;
 bool iterate_me(void** input_components, void**) {
   void* x = input_components[0];
-  auto frame = (mod__ovis__runtime__Frame*)input_components[0];
-  REQUIRE(frame->delta_time == 1337);
+  auto delta_time = (float*)input_components[0];
+  REQUIRE(*delta_time == 1337);
   iterated = true;
   return true;
 }
@@ -22,7 +21,7 @@ bool iterate_me(void** input_components, void**) {
 bool iteration_test_called = false;
 bool iteration_test(struct Scene* scene) {
   iteration_test_called = true;
-  const int32_t components[] = { RESOURCE_ID(TYPE(ovis, runtime, Frame)) };
+  const int32_t components[] = { RESOURCE_ID(TYPE(ovis, runtime, DeltaTime)) };
   return ovis_scene_iterate(scene, 1, components, 0, nullptr, iterate_me);
 }
 

@@ -17,6 +17,7 @@ exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
 exprs["type_declaration"] = "DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
 exprs["type_property_getter"] = "DECLARE_PROPERTY_TYPE_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_property_setter"] = "DECLARE_PROPERTY_TYPE_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["parameter"] = "PARAMETER\s*\(\s*(\w+)\s*,\s*{type_reference}\s*\)".format_map(exprs)
@@ -32,7 +33,15 @@ def create_type_decl(name):
         "Struct": {
             "name": name,
             "properties": [],
-            "functions": []
+            "functions": [],
+        }
+    }
+
+def create_type_alias(name, type_):
+    return {
+        "TypeAlias": {
+            "name": name,
+            "type": type_,
         }
     }
 
@@ -60,6 +69,8 @@ def get_type(module, name):
     for d in modules[module]["declarations"]:
         if "Struct" in d and d["Struct"]["name"] == name:
             return d["Struct"]
+        elif "TypeAlias" in d and d["TypeAlias"]["name"] == name:
+            return d["TypeAlias"]
     return None
 
 def get_property(type_, name):
@@ -80,6 +91,15 @@ for f in files:
                 "declarations": []
             }
         modules[module]["declarations"].append(create_type_decl(m[3]))
+
+    for m in re.finditer(exprs["type_alias"], content):
+        module = "{}/{}".format(m[1], m[2])
+        if not module in modules:
+            modules[module] = {
+                "module": module,
+                "declarations": []
+            }
+        modules[module]["declarations"].append(create_type_alias(m[3], "{}/{}/{}".format(m[4], m[5], m[6])))
 
     for m in re.finditer(exprs["scene_component"], content):
         module = "{}/{}".format(m[1], m[2])

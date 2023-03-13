@@ -75,10 +75,14 @@
   TYPE_CLONE_IMPL(type); \
   TYPE_INFO_IMPL(type)
 
+#define DECLARE_TYPE_ALIAS(alias, type) \
+  typedef type alias; \
+  typedef TYPE_PTR(type) TYPE_PTR(alias); \
+  typedef TYPE_CONST_PTR(type) TYPE_CONST_PTR(alias)
+
 #define RESOURCE_ID(type) CONCAT(type, _resource_id)
 #define SCENE_COMPONENT(type) \
   extern int32_t RESOURCE_ID(type)
-
 
 #define SCENE_COMPONENT_IMPL(owner, project, type) \
   SCENE_COMPONENT_IMPL_WITH_INFO(owner, project, type, TYPE_INFO(TYPE(owner, project, type))) \

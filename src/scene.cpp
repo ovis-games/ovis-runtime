@@ -1,6 +1,5 @@
 #include "scene.hpp"
 #include "ovis/runtime/basic_types.h"
-#include "ovis/runtime/frame.h"
 #include "ovis/runtime/resource.h"
 #include "resource.hpp"
 
@@ -43,9 +42,8 @@ Scene::Scene() {
 }
 
 void Scene::tick(float delta_time) {
-  assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, Frame))));
-  Frame frame { .delta_time = delta_time };
-  get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, Frame)))->emplace(&frame);
+  assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime))));
+  get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime)))->emplace(&delta_time);
   m_scheduler.run_jobs(this);
 }
 
@@ -81,3 +79,5 @@ bool ovis_scene_iterate(struct Scene* scene,
     return false;
   }
 }
+
+SCENE_COMPONENT_IMPL_WITH_INFO(ovis, runtime, DeltaTime, TYPE_INFO(TYPE(ovis, runtime, Float)));

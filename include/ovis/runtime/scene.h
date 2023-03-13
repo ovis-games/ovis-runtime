@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ovis/runtime/basic_types.h"
 #include "ovis/runtime/resource.h"
 #include "type.h"
 
@@ -21,6 +22,9 @@ bool ovis_scene_iterate(struct Scene* scene,
     int32_t output_component_ids_count, const int32_t* output_component_ids,
     IterateCallback callback
 );
+
+DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, DeltaTime), TYPE(ovis, runtime, Float));
+SCENE_COMPONENT(TYPE(ovis, runtime, DeltaTime));
 
 #ifdef __cplusplus
 }

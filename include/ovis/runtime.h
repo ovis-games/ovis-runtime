@@ -6,6 +6,5 @@
 #include "runtime/string.h"
 #include "runtime/list.h"
 #include "runtime/scene.h"
-#include "runtime/frame.h"
 #include "runtime/log.h"
 #include "runtime/job.h"
