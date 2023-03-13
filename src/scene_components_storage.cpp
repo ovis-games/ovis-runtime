@@ -9,10 +9,24 @@ SceneComponentStorage::~SceneComponentStorage() {
   reset();
 }
 
-void* SceneComponentStorage::emplace() {
+void* SceneComponentStorage::emplace(const void* src) {
   if (m_component_ptr == nullptr) {
     m_component_ptr = aligned_alloc(resource()->type->align, resource()->type->size);
-    resource()->type->initialize(resource()->type, m_component_ptr);
+    
+    if (src) {
+      if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
+        free(m_component_ptr);
+        m_component_ptr = nullptr;
+      }
+    } else {
+      resource()->type->initialize(resource()->type, m_component_ptr);
+    }
+  } else if (src) {
+    resource()->type->destroy(resource()->type, m_component_ptr);
+    if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
+      free(m_component_ptr);
+      m_component_ptr = nullptr;
+    }
   }
   return m_component_ptr;
 }
@@ -24,4 +38,5 @@ void SceneComponentStorage::reset() {
 
   resource()->type->destroy(resource()->type, m_component_ptr);
   free(m_component_ptr); // free_sized() is only available in C
+  m_component_ptr = nullptr;
 }

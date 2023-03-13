@@ -16,6 +16,11 @@ void ovis_scene_tick(struct Scene* scene, float delta_time) {
   scene->tick(delta_time);
 }
 
+void* ovis_scene_get_scene_component(struct Scene* scene, ResourceId resource_id) {
+  auto storage = scene->get_scene_component_storage(resource_id);
+  return storage != nullptr ? storage->get() : nullptr;
+}
+
 void ovis_scene_destroy(struct Scene* scene) {
   delete scene;
 }
@@ -38,21 +43,34 @@ Scene::Scene() {
 
 void Scene::tick(float delta_time) {
   assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, Frame))));
-  auto frame = (TYPE_PTR(TYPE(ovis, runtime, Frame)))get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, Frame)))->emplace();
-  assert(frame);
-  frame->delta_time = delta_time;
+  Frame frame { .delta_time = delta_time };
+  get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, Frame)))->emplace(&frame);
   m_scheduler.run_jobs(this);
 }
 
-bool ovis_scene_iterate(struct Scene* scene, const int32_t* component_ids, int component_ids_count, IterateCallback callback) {
-  void* components[component_ids_count];
-  for (int i = 0; i < component_ids_count; ++i) {
-    assert(scene->get_scene_component_storage(component_ids[i]));
-    components[i] = scene->get_scene_component_storage(component_ids[i])->get();
+bool ovis_scene_iterate(struct Scene* scene,
+    int32_t input_component_ids_count, const int32_t* input_component_ids,
+    int32_t output_component_ids_count, const int32_t* output_component_ids,
+    IterateCallback callback
+) {
+  void* input_components[input_component_ids_count];
+  for (int i = 0; i < input_component_ids_count; ++i) {
+    assert(scene->get_scene_component_storage(input_component_ids[i]));
+    input_components[i] = scene->get_scene_component_storage(input_component_ids[i])->get();
     // The scene component does not exist so we can stop
-    if (!components[i]) {
+    if (!input_components[i]) {
       return true;
     }
   }
-  return callback(components);
+  void* output_components[output_component_ids_count];
+  if (callback(input_components, output_components)) {
+    for (int i = 0; i < output_component_ids_count; ++i) {
+      auto scene_component_storage = scene->get_scene_component_storage(output_component_ids[i]);
+      assert(scene_component_storage);
+      scene_component_storage->emplace(output_components[i]);
+    }
+    return true;
+  } else {
+    return false;
+  }
 }

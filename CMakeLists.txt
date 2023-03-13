@@ -58,6 +58,10 @@ list(TRANSFORM RUNTIME_SOURCES REPLACE "^(.+)$" "${CMAKE_CURRENT_SOURCE_DIR}/\\1
 
 find_package(Python COMPONENTS Interpreter)
 
+execute_process(
+  COMMAND ${Python_EXECUTABLE} -m pip install -r ${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt
+)
+
 add_custom_target(
   generate-module-file ALL
   COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_module_file.py ${RUNTIME_SOURCES}

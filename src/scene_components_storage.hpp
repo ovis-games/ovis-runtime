@@ -24,7 +24,7 @@ class SceneComponentStorage final : public ComponentStorage {
     const void* get() const { return m_component_ptr; }
     void* get() { return m_component_ptr; }
 
-    void* emplace();
+    void* emplace(const void* src = nullptr);
     void reset();
 
   private:
