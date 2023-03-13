@@ -65,8 +65,8 @@
 #else
 #define TYPEDEF_ALIGNED_ARRAY(ctype, alignment, size, type) \
   typedef ctype type[size] __attribute__((aligned(alignment))); \
-  typedef const type TYPE_CONST_PTR(type); \
-  typedef type TYPE_PTR(type)
+  typedef const ctype* TYPE_CONST_PTR(type); \
+  typedef ctype* TYPE_PTR(type)
 #endif
 
 #define DEFINE_BASIC_TYPE(type) \
@@ -95,11 +95,15 @@
   }
 
 #define TYPE_PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
-#define TYPE_PROPERTY_GETTER_DECL(type, property_name) bool TYPE_PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, const void* object, void* _output)
-#define DECLARE_PROPERTY_TYPE_GETTER(type, property_name, property_type) TYPE_PROPERTY_GETTER_DECL(type, property_name)
-#define TYPE_PROPERTY_GETTER_IMPL(type, property_name, projecty_type) bool TYPE_PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, const void* object, void* _output) { \
-  return CONCAT(projecty_type, _clone)(&CONCAT(projecty_type, _type), &((const type*)object)->property_name, _output); \
+#define TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type) bool TYPE_PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_CONST_PTR(type) object, TYPE_PTR(property_type) _output)
+#define DECLARE_PROPERTY_TYPE_GETTER(type, property_name, property_type) TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type)
+#define TYPE_PROPERTY_GETTER_IMPL(type, property_name, property_type) TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type) { \
+  return CONCAT(property_type, _clone)(&CONCAT(property_type, _type), &object->property_name, _output); \
 }
+
+#define TYPE_PROPERTY_SETTER_PREFIX(type, property_name) CONCAT3(type, _p_set_, property_name)
+#define TYPE_PROPERTY_SETTER_DECL(type, property_name, property_type) bool TYPE_PROPERTY_SETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_PTR(type) object, TYPE_CONST_PTR(property_type) value)
+#define DECLARE_PROPERTY_TYPE_SETTER(type, property_name, property_type) TYPE_PROPERTY_SETTER_DECL(type, property_name, property_type)
 
 #define TYPE_FUNCTION(type, method_name) CONCAT3(type, _s_, method_name)
 #define DECLARE_TYPE_FUNCTION(type, method_name, ...) bool TYPE_FUNCTION(type, method_name)(__VA_ARGS__)

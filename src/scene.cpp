@@ -44,6 +44,11 @@ Scene::Scene() {
 void Scene::tick(float delta_time) {
   assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime))));
   get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime)))->emplace(&delta_time);
+
+  m_game_time += delta_time * (1 / 1000.0f);
+  assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, GameTime))));
+  get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, GameTime)))->emplace(&m_game_time);
+
   m_scheduler.run_jobs(this);
 }
 
@@ -81,3 +86,4 @@ bool ovis_scene_iterate(struct Scene* scene,
 }
 
 SCENE_COMPONENT_IMPL_WITH_INFO(ovis, runtime, DeltaTime, TYPE_INFO(TYPE(ovis, runtime, Float)));
+SCENE_COMPONENT_IMPL_WITH_INFO(ovis, runtime, GameTime, TYPE_INFO(TYPE(ovis, runtime, Float)));

@@ -8,3 +8,4 @@
 #include "runtime/scene.h"
 #include "runtime/log.h"
 #include "runtime/job.h"
+#include "runtime/canvas.h"

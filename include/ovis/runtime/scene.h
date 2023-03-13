@@ -26,6 +26,9 @@ bool ovis_scene_iterate(struct Scene* scene,
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, DeltaTime), TYPE(ovis, runtime, Float));
 SCENE_COMPONENT(TYPE(ovis, runtime, DeltaTime));
 
+DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, GameTime), TYPE(ovis, runtime, Float));
+SCENE_COMPONENT(TYPE(ovis, runtime, GameTime));
+
 #ifdef __cplusplus
 }
 #endif

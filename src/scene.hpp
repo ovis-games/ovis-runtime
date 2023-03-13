@@ -25,6 +25,7 @@ class Scene {
     }
 
   private:
+    float m_game_time = 0.0f;
     Scheduler m_scheduler;
     std::vector<std::unique_ptr<ComponentStorage>> m_component_storages;
 };
