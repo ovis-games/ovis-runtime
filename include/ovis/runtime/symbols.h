@@ -79,11 +79,15 @@
 #define SCENE_COMPONENT(type) \
   extern int32_t RESOURCE_ID(type)
 
- // TODO: what if register_job() fails?
+
 #define SCENE_COMPONENT_IMPL(owner, project, type) \
+  SCENE_COMPONENT_IMPL_WITH_INFO(owner, project, type, TYPE_INFO(TYPE(owner, project, type))) \
+
+ // TODO: what if register_job() fails?
+#define SCENE_COMPONENT_IMPL_WITH_INFO(owner, project, type, info) \
   int32_t RESOURCE_ID(TYPE(owner, project, type)); \
   __attribute__((constructor)) void CONCAT(TYPE(owner, project, type), _resource_registration)() { \
-    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, RESOURCE_KIND_SCENE_COMPONENT, &TYPE_INFO(TYPE(owner, project, type)))->id; \
+    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, RESOURCE_KIND_SCENE_COMPONENT, &info)->id; \
   }
 
 #define TYPE_PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
