@@ -4,6 +4,7 @@
 #include "ovis/runtime/resource.h"
 #include "resource.hpp"
 
+#include <alloca.h>
 #include <unordered_map>
 #include <string>
 #include <cassert>
@@ -63,11 +64,17 @@ bool ovis_scene_iterate(struct Scene* scene,
     }
   }
   void* output_components[output_component_ids_count];
+  for (int i = 0; i < output_component_ids_count; ++i) {
+    output_components[i] = alloca(get_resource(output_component_ids[i])->type->size);
+  }
+
   if (callback(input_components, output_components)) {
     for (int i = 0; i < output_component_ids_count; ++i) {
       auto scene_component_storage = scene->get_scene_component_storage(output_component_ids[i]);
       assert(scene_component_storage);
+      // TODO: move the value into the storage instead of copying it
       scene_component_storage->emplace(output_components[i]);
+      get_resource(output_component_ids[i])->type->destroy(get_resource(output_component_ids[i])->type, output_components[i]);
     }
     return true;
   } else {
