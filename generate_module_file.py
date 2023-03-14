@@ -11,14 +11,18 @@ for filename in sys.argv:
         files[filename] = file.read()
 
 exprs = {}
-exprs["reference"] = "\((\w+)\s*,\s*(\w+),\s(\w+)\)"
+exprs["s"] = "\s*"
+exprs["reference"] = "\((\w+)\s*,\s*(\w+),\s*(\w+)\)"
 exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
 
 exprs["type_declaration"] = "DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
+exprs["generic_type"] = "GENERIC_TYPE\s*\(\s*(\w+)\s*\)".format_map(exprs)
+exprs["generic_type_declaration"] = "DECLARE_GENERIC_TYPE{s}\({s}(\w+){s},{s}(\w+),\s(\w+)(?:{s},{s}{generic_type})*{s}\){s};".format_map(exprs)
 exprs["type_property_getter"] = "DECLARE_PROPERTY_TYPE_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_property_setter"] = "DECLARE_PROPERTY_TYPE_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
+exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["parameter"] = "PARAMETER\s*\(\s*(\w+)\s*,\s*{type_reference}\s*\)".format_map(exprs)
 exprs["function_reference"] = "FUNCTION\s*{reference}".format_map(exprs)
@@ -32,6 +36,7 @@ def create_type_decl(name):
     return {
         "Struct": {
             "name": name,
+            "generics": [],
             "properties": [],
             "functions": [],
         }
@@ -92,6 +97,17 @@ for f in files:
             }
         modules[module]["declarations"].append(create_type_decl(m[3]))
 
+    for m in re.finditer(exprs["generic_type_declaration"], content):
+        module = "{}/{}".format(m[1], m[2])
+        if not module in modules:
+            modules[module] = {
+                "module": module,
+                "declarations": []
+            }
+        type_ = create_type_decl(m[3])
+        type_["Struct"]["generics"] = m.captures(4)
+        modules[module]["declarations"].append(type_)
+
     for m in re.finditer(exprs["type_alias"], content):
         module = "{}/{}".format(m[1], m[2])
         if not module in modules:
@@ -105,6 +121,11 @@ for f in files:
         module = "{}/{}".format(m[1], m[2])
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
         type_["resource"] = "SceneComponent"
+
+    for m in re.finditer(exprs["event"], content):
+        module = "{}/{}".format(m[1], m[2])
+        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
+        type_["resource"] = "Event"
 
     for m in re.finditer(exprs["type_property_getter"], content):
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])

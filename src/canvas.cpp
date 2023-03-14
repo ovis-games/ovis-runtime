@@ -2,16 +2,40 @@
 
 #include "emscripten/html5.h"
 #include "emscripten/html5_webgl.h"
+#include "ovis/runtime/input_events.h"
 #include "ovis/runtime/job.h"
 #include "ovis/runtime/scene.h"
 #include "ovis/runtime/symbols.h"
+#include "scene.hpp"
 #include <GLES2/gl2.h>
 
 #include <cstdio>
 
 struct Canvas {
+  char* id;
   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE webgl_context;
 };
+
+
+EM_BOOL on_key_down(int event_type, const EmscriptenKeyboardEvent* keyboard_event, void* user_data) {
+  return true;
+}
+
+EM_BOOL on_mouse_move(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data) {
+  auto scene = static_cast<Scene*>(user_data);
+  const float x = mouse_event->targetX;
+  const float y = mouse_event->targetY;
+  const float dx = mouse_event->movementX;
+  const float dy = mouse_event->movementY;
+  auto mouse_move_storage = scene->get_event_storage(RESOURCE_ID(TYPE(ovis, runtime, MouseMoveEvent)));
+  MouseMoveEvent event {
+    .screen_space_position = {x, y},
+    .relative_screen_space_position = {dx, dy},
+  };
+  mouse_move_storage->emit(&event);
+  printf("count: %d\n", mouse_move_storage->count());
+  return true;
+}
 
 struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
   EmscriptenWebGLContextAttributes context_attributes;
@@ -25,10 +49,19 @@ struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
     puts("Successfully created WebGL context");
     emscripten_webgl_make_context_current(context);
   }
-  return new Canvas{ context };
+
+  emscripten_set_mousemove_callback(canvas_id, scene, 0, on_mouse_move);
+
+
+  return new Canvas{ 
+    .id = strdup(canvas_id),
+    .webgl_context = context,
+  };
 }
 
 void ovis_canvas_destroy(struct Canvas* canvas) {
+  emscripten_set_mousemove_callback(canvas->id, nullptr, 0, nullptr);
+  free(canvas->id);
   delete canvas;
 }
 
@@ -48,4 +81,4 @@ __attribute__((constructor)) void setup_clear_framebuffer_job() {
   register_job("ovis/runtime/clearFramebuffer", &clear_framebuffer, 0, nullptr);
 }
 
-SCENE_COMPONENT_IMPL_WITH_INFO(ovis, runtime, ClearColor, TYPE_INFO(TYPE(ovis, runtime, Vec4F)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, ClearColor, RESOURCE_KIND_SCENE_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec4F)));

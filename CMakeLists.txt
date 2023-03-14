@@ -44,12 +44,15 @@ add_library(
   include/ovis/runtime/list.h src/list.c
   include/ovis/runtime/log.h src/log.c
   include/ovis/runtime/resource.h src/resource.hpp src/resource.cpp
+  include/ovis/runtime/input_events.h src/input_events.c
   include/ovis/runtime/job.h src/job.cpp
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
   include/ovis/runtime/canvas.h src/canvas.cpp
 
   src/scheduler.hpp src/scheduler.cpp
+  src/resource_storage.hpp src/resource_storage.cpp
   src/scene_components_storage.hpp src/scene_components_storage.cpp
+  src/event_storage.hpp src/event_storage.cpp
 )
 
 get_target_property(RUNTIME_SOURCES ovis-runtime SOURCES)

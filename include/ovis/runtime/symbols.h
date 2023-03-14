@@ -10,6 +10,8 @@
 #define FUNCTION(owner, project, function) CONCAT3(MODULE(owner, project), __, function)
 #define PARAMETER(name, type) TYPE_CONST_PTR(type) name
 #define MUTABLE_PARAMETER(name, type) type* name
+#define GENERIC_PARAMETER(name, type) const void* name
+#define MUTABLE_GENERIC_PARAMETER(name, type) void* name
 #define RESULT(type) type* _output
 #define DECLARE_FUNCTION(func, ...) bool func(__VA_ARGS__)
 #define FUNCTION_IMPL(func, ...) bool func(__VA_ARGS__)
@@ -20,17 +22,17 @@
 #define TYPE_FROZEN(type) CONCAT(type, _frozen)
 #define TYPE_IS_FROZEN(type) defined(type ## _frozen)
 
-#define TYPE_INITIALIZE(type) type ## _initialize
+#define TYPE_INITIALIZE(type) CONCAT(type, _initialize)
 #define TYPE_INITIALIZE_DECL(type) void TYPE_INITIALIZE(type) (const struct TypeInfo* type_info, void* ptr)
 #define TYPE_INITIALIZE_IMPL(type) TYPE_INITIALIZE_DECL(type) { memset(ptr, 0, sizeof(type)); }
 #define INITIALIZE(type, ptr) TYPE_INITIALIZE(type)(&TYPE_INFO(type), (ptr))
 
-#define TYPE_DESTROY(type) type ## _destroy
-#define TYPE_DESTROY_DECL(type) void TYPE_DESTROY(type) (const struct TypeInfo* type_info, void* ptr)
+#define TYPE_DESTROY(type) CONCAT(type, _destroy)
+#define TYPE_DESTROY_DECL(type_) void TYPE_DESTROY(type_) (const struct TypeInfo* type, void* ptr)
 #define TYPE_DESTROY_IMPL(type) TYPE_DESTROY_DECL(type) {}
 #define DESTROY(type, ptr) TYPE_DESTROY(type)(&TYPE_INFO(type), (ptr))
 
-#define TYPE_CLONE(type) type ## _clone
+#define TYPE_CLONE(type) CONCAT(type, _clone)
 #define TYPE_CLONE_DECL(type) bool TYPE_CLONE(type) (const struct TypeInfo* type_info, const void* src, void* dst)
 #define TYPE_CLONE_IMPL(type) TYPE_CLONE_DECL(type) { memcpy(dst, src, sizeof(type)); return true; }
 #define CLONE(type, src, dst) TYPE_CLONE(type)(&TYPE_INFO(type), (src), (dst))
@@ -46,6 +48,27 @@
   TYPE_DESTROY_DECL(TYPE(owner, project, type)); \
   TYPE_CLONE_DECL(TYPE(owner, project, type)); \
   TYPE_INFO_DECL(TYPE(owner, project, type))
+
+#define GENERIC_INSTANTIATION_LIST(type) CONCAT(type, _instantiations)
+#define GENERIC_INSTANTIATION_CALLBACK(type) CONCAT(TYPE(owner, project, type), _instantiation_callback)
+#define GENERIC_INSTANTIATION_IMPL(type_) \
+  GenericTypeInstantiationList GENERIC_INSTANTIATION_LIST(type_) = NULL; \
+  void GENERIC_INSTANTIATION_CALLBACK(type_)(struct TypeInfo* type)
+
+#define GENERIC_COUNT(...) (sizeof((Generic[]){__VA_ARGS__})/sizeof(Generic))
+#define INSTANTIATE_GENERIC_TYPE(type, ...) \
+  instantiate_generic_type(&GENERIC_INSTANTIATION_LIST(type), GENERIC_COUNT(__VA_ARGS__), (Generic[]){__VA_ARGS__}, GENERIC_INSTANTIATION_CALLBACK(type))
+
+#define RELEASE_GENERIC_TYPE(type, instance) \
+  release_generic_type_instantiation(&GENERIC_INSTANTIATION_LIST(type), instance)
+
+#define GENERIC_TYPE(name) const struct TypeInfo* name
+#define DECLARE_GENERIC_TYPE(owner, project, type, ...) DECLARE_TYPE(owner, project, type); \
+  TYPE_INITIALIZE_DECL(TYPE(owner, project, type)); \
+  TYPE_DESTROY_DECL(TYPE(owner, project, type)); \
+  TYPE_CLONE_DECL(TYPE(owner, project, type)); \
+  extern GenericTypeInstantiationList GENERIC_INSTANTIATION_LIST(TYPE(owner, project, type)); \
+  void GENERIC_INSTANTIATION_CALLBACK(TYPE(owner, project, type))(struct TypeInfo* type)
 
 #define TYPEDEF(ctype, type) \
   typedef ctype type; \
@@ -81,17 +104,17 @@
   typedef TYPE_CONST_PTR(type) TYPE_CONST_PTR(alias)
 
 #define RESOURCE_ID(type) CONCAT(type, _resource_id)
-#define SCENE_COMPONENT(type) \
-  extern int32_t RESOURCE_ID(type)
+#define EVENT(type) extern int32_t RESOURCE_ID(type)
+#define SCENE_COMPONENT(type) extern int32_t RESOURCE_ID(type)
 
-#define SCENE_COMPONENT_IMPL(owner, project, type) \
-  SCENE_COMPONENT_IMPL_WITH_INFO(owner, project, type, TYPE_INFO(TYPE(owner, project, type))) \
+#define RESOURCE_IMPL(owner, project, type, kind) \
+  RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, TYPE_INFO(TYPE(owner, project, type))) \
 
- // TODO: what if register_job() fails?
-#define SCENE_COMPONENT_IMPL_WITH_INFO(owner, project, type, info) \
+ // TODO: what if register_resource() fails?
+#define RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, info) \
   int32_t RESOURCE_ID(TYPE(owner, project, type)); \
   __attribute__((constructor)) void CONCAT(TYPE(owner, project, type), _resource_registration)() { \
-    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, RESOURCE_KIND_SCENE_COMPONENT, &info)->id; \
+    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, kind, &info)->id; \
   }
 
 #define TYPE_PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
@@ -106,7 +129,11 @@
 #define DECLARE_PROPERTY_TYPE_SETTER(type, property_name, property_type) TYPE_PROPERTY_SETTER_DECL(type, property_name, property_type)
 
 #define TYPE_FUNCTION(type, method_name) CONCAT3(type, _s_, method_name)
-#define DECLARE_TYPE_FUNCTION(type, method_name, ...) bool TYPE_FUNCTION(type, method_name)(__VA_ARGS__)
+#define SELF(type) TYPE_CONST_PTR(type) self
+#define MUTABLE_SELF(type) TYPE_PTR(type) self
+#define DECLARE_TYPE_FUNCTION(type, method_name, ...) bool TYPE_FUNCTION(type, method_name)(const struct TypeInfo* type_info, __VA_ARGS__)
+#define DECLARE_MEMBER_FUNCTION(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, SELF(type), __VA_ARGS__)
+#define DECLARE_MUTABLE_MEMBER_FUNCTION(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, MUTABLE_SELF(type), __VA_ARGS__)
 #define TYPE_FUNCTION_IMPL(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, __VA_ARGS__)
 
 #define VARIABLE_STORAGE(type, identifier) alignas(16) char identifier[SIZE_OF(type)]

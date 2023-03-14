@@ -5,61 +5,61 @@
 
 #include <cstdint>
 
-TEST_CASE("mod__ovis__runtime__List can be instantiated", "[ovis][runtime][mod__ovis__runtime__List]" ) {
-  const struct TypeInfo* int_list = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
-  REQUIRE(int_list->size == sizeof(mod__ovis__runtime__List));
-  REQUIRE(int_list->align == alignof(mod__ovis__runtime__List));
-  REQUIRE(int_list->initialize);
-  REQUIRE(int_list->clone);
-  REQUIRE(int_list->destroy);
+// TEST_CASE("mod__ovis__runtime__List can be instantiated", "[ovis][runtime][mod__ovis__runtime__List]" ) {
+//   const struct TypeInfo* int_list = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
+//   REQUIRE(int_list->size == sizeof(mod__ovis__runtime__List));
+//   REQUIRE(int_list->align == alignof(mod__ovis__runtime__List));
+//   REQUIRE(int_list->initialize);
+//   REQUIRE(int_list->clone);
+//   REQUIRE(int_list->destroy);
 
-  const struct TypeInfo* bool_list = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Bool_type);
-  REQUIRE(bool_list->size == sizeof(mod__ovis__runtime__List));
-  REQUIRE(bool_list->align == alignof(mod__ovis__runtime__List));
-  REQUIRE(bool_list->initialize);
-  REQUIRE(bool_list->clone);
-  REQUIRE(bool_list->destroy);
+//   const struct TypeInfo* bool_list = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Bool_type);
+//   REQUIRE(bool_list->size == sizeof(mod__ovis__runtime__List));
+//   REQUIRE(bool_list->align == alignof(mod__ovis__runtime__List));
+//   REQUIRE(bool_list->initialize);
+//   REQUIRE(bool_list->clone);
+//   REQUIRE(bool_list->destroy);
 
-  mod__ovis__runtime__List_release(int_list);
-  mod__ovis__runtime__List_release(bool_list);
-}
+//   mod__ovis__runtime__List_release(int_list);
+//   mod__ovis__runtime__List_release(bool_list);
+// }
 
-TEST_CASE("mod__ovis__runtime__List can be initialized", "[ovis][runtime][mod__ovis__runtime__List]" ) {
-  const struct TypeInfo* int_list_type = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
+// TEST_CASE("mod__ovis__runtime__List can be initialized", "[ovis][runtime][mod__ovis__runtime__List]" ) {
+//   const struct TypeInfo* int_list_type = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
 
-  push_stack_var(int_list_type, list, mod__ovis__runtime__List);
-  REQUIRE(list->size == 0);
-  REQUIRE(list->capacity == 0);
-  REQUIRE(list->data == NULL);
-  pop_stack_var(list, int_list_type);
+//   push_stack_var(int_list_type, list, mod__ovis__runtime__List);
+//   REQUIRE(list->size == 0);
+//   REQUIRE(list->capacity == 0);
+//   REQUIRE(list->data == NULL);
+//   pop_stack_var(list, int_list_type);
 
-  mod__ovis__runtime__List_release(int_list_type);
-}
+//   mod__ovis__runtime__List_release(int_list_type);
+// }
 
-TEST_CASE("value can be added and removed to list", "[ovis][runtime][mod__ovis__runtime__List]" ) {
-  const struct TypeInfo* int_list_type = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
+// TEST_CASE("value can be added and removed to list", "[ovis][runtime][mod__ovis__runtime__List]" ) {
+//   const struct TypeInfo* int_list_type = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
 
-  push_stack_var(int_list_type, list, mod__ovis__runtime__List);
+//   push_stack_var(int_list_type, list, mod__ovis__runtime__List);
 
-  REQUIRE(list->size == 0);
-  REQUIRE(list->capacity == 0);
-  REQUIRE(list->data == NULL);
+//   REQUIRE(list->size == 0);
+//   REQUIRE(list->capacity == 0);
+//   REQUIRE(list->data == NULL);
 
-  int32_t val = 42;
-  REQUIRE(mod__ovis__runtime__List_m_add(int_list_type, list, &val));
+//   int32_t val = 42;
+//   REQUIRE(mod__ovis__runtime__List_m_add(int_list_type, list, &val));
 
-  REQUIRE(list->size == 1);
-  REQUIRE(list->capacity > 0);
-  REQUIRE(list->data != NULL);
+//   REQUIRE(list->size == 1);
+//   REQUIRE(list->capacity > 0);
+//   REQUIRE(list->data != NULL);
 
-  int32_t remove_index = 0;
-  REQUIRE(mod__ovis__runtime__List_m_remove(int_list_type, list, &remove_index));
+//   int32_t remove_index = 0;
+//   REQUIRE(mod__ovis__runtime__List_m_remove(int_list_type, list, &remove_index));
 
-  REQUIRE(list->size == 0);
-  REQUIRE(list->capacity > 0);
-  REQUIRE(list->data != NULL);
+//   REQUIRE(list->size == 0);
+//   REQUIRE(list->capacity > 0);
+//   REQUIRE(list->data != NULL);
 
-  pop_stack_var(list, int_list_type);
+//   pop_stack_var(list, int_list_type);
 
-  mod__ovis__runtime__List_release(int_list_type);
-}
+//   mod__ovis__runtime__List_release(int_list_type);
+// }

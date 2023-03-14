@@ -3,7 +3,7 @@
 #include "scene.hpp"
 #include <cstdlib>
 
-SceneComponentStorage::SceneComponentStorage(const Resource* resource) : ComponentStorage(resource), m_component_ptr(nullptr) {}
+SceneComponentStorage::SceneComponentStorage(const Resource* resource) : ResourceStorage(resource) {}
 
 SceneComponentStorage::~SceneComponentStorage() {
   reset();

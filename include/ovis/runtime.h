@@ -9,3 +9,4 @@
 #include "runtime/log.h"
 #include "runtime/job.h"
 #include "runtime/canvas.h"
+#include "runtime/input_events.h"

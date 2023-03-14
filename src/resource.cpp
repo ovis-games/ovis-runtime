@@ -16,7 +16,7 @@ Resource* register_resource(const char* name, ResourceKind kind, const struct Ty
     }
   }
 
-  printf("registering resource: %s\n", name);
+  printf("registering resource: %s [%d]\n", name, kind);
   RESOURCES.push_back(Resource {
     .id = ResourceIdType::create(RESOURCES.size()),
     .name = name,
