@@ -35,7 +35,16 @@ void mod__ovis__runtime__String_initialize_from_literal(const struct TypeInfo* s
 }
 
 
-TYPE_PROPERTY_GETTER_IMPL(TYPE(ovis, runtime, String), size, TYPE(ovis, runtime, Int))
+PROPERTY_GETTER_IMPL(TYPE(ovis, runtime, String), size, TYPE(ovis, runtime, Int))
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, String), fromBool,
+    PARAMETER(boolean, TYPE(ovis, runtime, Bool)),
+    RESULT(TYPE(ovis, runtime, String))
+) {
+  mod__ovis__runtime__String_initialize_from_literal(&mod__ovis__runtime__String_type, _output, *boolean ? "true" : "false", *boolean ? 4 : 5);
+  return true;
+}
 
 TYPE_FUNCTION_IMPL(
     TYPE(ovis, runtime, String), fromInt,

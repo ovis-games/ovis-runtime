@@ -19,7 +19,7 @@ DECLARE_GENERIC_TYPE(
     GENERIC_TYPE(T)
 );
 
-DECLARE_PROPERTY_TYPE_GETTER(
+DECLARE_PROPERTY_GETTER(
     TYPE(ovis, runtime, List),
     length,
     TYPE(ovis, runtime, Int)

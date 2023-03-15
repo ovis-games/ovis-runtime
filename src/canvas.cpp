@@ -29,17 +29,21 @@ EM_BOOL on_mouse_move(int event_type, const EmscriptenMouseEvent* mouse_event, v
   const float dy = mouse_event->movementY;
   auto mouse_move_storage = scene->get_event_storage(RESOURCE_ID(TYPE(ovis, runtime, MouseMoveEvent)));
   MouseMoveEvent event {
-    .screen_space_position = {x, y},
-    .relative_screen_space_position = {dx, dy},
+    .position = {x, y},
+    .delta = {dx, dy},
   };
   mouse_move_storage->emit(&event);
   return true;
 }
 
-EM_BOOL on_mouse_down(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data) {
+EM_BOOL on_mouse_button(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data) {
   auto scene = static_cast<Scene*>(user_data);
   auto mouse_move_storage = scene->get_event_storage(RESOURCE_ID(TYPE(ovis, runtime, MouseButtonEvent)));
-  MouseButtonEvent event {};
+  MouseButtonEvent event {
+    .position = { static_cast<float>(mouse_event->targetX), static_cast<float>(mouse_event->targetY) },
+    .button = mouse_event->button,
+    .pressed = event_type == EMSCRIPTEN_EVENT_MOUSEDOWN,
+  };
   mouse_move_storage->emit(&event);
   return true;
 }
@@ -68,8 +72,8 @@ struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
   }
 
   emscripten_set_mousemove_callback(canvas_id, scene, 0, on_mouse_move);
-  emscripten_set_mousedown_callback(canvas_id, scene, 0, on_mouse_down);
-
+  emscripten_set_mousedown_callback(canvas_id, scene, 0, on_mouse_button);
+  emscripten_set_mouseup_callback(canvas_id, scene, 0, on_mouse_button);
 
   return new Canvas{ 
     .id = strdup(canvas_id),
@@ -80,6 +84,7 @@ struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
 void ovis_canvas_destroy(struct Canvas* canvas) {
   emscripten_set_mousemove_callback(canvas->id, nullptr, 0, nullptr);
   emscripten_set_mousedown_callback(canvas->id, nullptr, 0, nullptr);
+  emscripten_set_mouseup_callback(canvas->id, nullptr, 0, nullptr);
   free(canvas->id);
   delete canvas;
 }

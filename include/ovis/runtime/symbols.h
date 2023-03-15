@@ -117,16 +117,31 @@
     CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, kind, &info)->id; \
   }
 
-#define TYPE_PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
-#define TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type) bool TYPE_PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_CONST_PTR(type) object, TYPE_PTR(property_type) _output)
-#define DECLARE_PROPERTY_TYPE_GETTER(type, property_name, property_type) TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type)
-#define TYPE_PROPERTY_GETTER_IMPL(type, property_name, property_type) TYPE_PROPERTY_GETTER_DECL(type, property_name, property_type) { \
+#define PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
+#define PROPERTY_GETTER_DECL(type, property_name, property_type) bool PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_CONST_PTR(type) object, TYPE_PTR(property_type) _output)
+#define DECLARE_PROPERTY_GETTER(type, property_name, property_type) PROPERTY_GETTER_DECL(type, property_name, property_type)
+#define PROPERTY_GETTER_IMPL(type, property_name, property_type) PROPERTY_GETTER_DECL(type, property_name, property_type) { \
   return CONCAT(property_type, _clone)(&CONCAT(property_type, _type), &object->property_name, _output); \
 }
 
-#define TYPE_PROPERTY_SETTER_PREFIX(type, property_name) CONCAT3(type, _p_set_, property_name)
-#define TYPE_PROPERTY_SETTER_DECL(type, property_name, property_type) bool TYPE_PROPERTY_SETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_PTR(type) object, TYPE_CONST_PTR(property_type) value)
-#define DECLARE_PROPERTY_TYPE_SETTER(type, property_name, property_type) TYPE_PROPERTY_SETTER_DECL(type, property_name, property_type)
+#define PROPERTY_SETTER_PREFIX(type, property_name) CONCAT3(type, _p_set_, property_name)
+#define PROPERTY_SETTER_DECL(type, property_name, property_type) bool PROPERTY_SETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_PTR(type) object, TYPE_CONST_PTR(property_type) value)
+#define DECLARE_PROPERTY_SETTER(type, property_name, property_type) PROPERTY_SETTER_DECL(type, property_name, property_type)
+#define PROPERTY_SETTER_IMPL(type, property_name, property_type) PROPERTY_SETTER_DECL(type, property_name, property_type) { \
+  DESTROY(property_type, &object->property_name); \
+  return CLONE(property_type, value, &object->property_name); \
+}
+
+// #define GET_PROPERTY(type, property_name, output) PROPERTY_SETTER_PREFIX(
+// #define GET_PROPERTY_FROM_GENERIC(type, property_name, output) PROPERTY_SETTER_PREFIX(
+
+#define PROPERTY_IMPL(type, property_name, property_type) \
+  PROPERTY_GETTER_IMPL(type, property_name, property_type) \
+  PROPERTY_SETTER_IMPL(type, property_name, property_type) \
+
+#define DECLARE_PROPERTY(type, property_name, property_type) \
+  DECLARE_PROPERTY_GETTER(type, property_name, property_type); \
+  DECLARE_PROPERTY_SETTER(type, property_name, property_type)
 
 #define TYPE_FUNCTION(type, method_name) CONCAT3(type, _s_, method_name)
 #define SELF(type) TYPE_CONST_PTR(type) self

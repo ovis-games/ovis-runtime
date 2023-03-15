@@ -18,8 +18,9 @@ exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
 exprs["type_declaration"] = "DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
 exprs["generic_type"] = "GENERIC_TYPE\s*\(\s*(\w+)\s*\)".format_map(exprs)
 exprs["generic_type_declaration"] = "DECLARE_GENERIC_TYPE{s}\({s}(\w+){s},{s}(\w+),\s(\w+)(?:{s},{s}{generic_type})*{s}\){s};".format_map(exprs)
-exprs["type_property_getter"] = "DECLARE_PROPERTY_TYPE_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
-exprs["type_property_setter"] = "DECLARE_PROPERTY_TYPE_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_property"] = "DECLARE_PROPERTY\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_property_getter"] = "DECLARE_PROPERTY_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_property_setter"] = "DECLARE_PROPERTY_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
@@ -126,6 +127,13 @@ for f in files:
         module = "{}/{}".format(m[1], m[2])
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
         type_["resource"] = "Event"
+
+    for m in re.finditer(exprs["type_property"], content):
+        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
+        prop = create_property(m[4], m[5], m[6], m[7])
+        prop["get"] = True
+        prop["set"] = True
+        type_["properties"].append(prop)
 
     for m in re.finditer(exprs["type_property_getter"], content):
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])

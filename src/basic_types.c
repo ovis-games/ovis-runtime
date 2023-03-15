@@ -182,46 +182,46 @@ TYPE_FUNCTION_IMPL(
   return true;
 }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec2F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec2F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), z, TYPE(ovis, runtime, Int)) { *_output = object[2]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), z, TYPE(ovis, runtime, Int)) { object[2] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3I), z, TYPE(ovis, runtime, Int)) { *_output = object[2]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3I), z, TYPE(ovis, runtime, Int)) { object[2] = *value; return true; }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), z, TYPE(ovis, runtime, Float)) { *_output = object[2]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), z, TYPE(ovis, runtime, Float)) { object[2] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec3F), z, TYPE(ovis, runtime, Float)) { *_output = object[2]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec3F), z, TYPE(ovis, runtime, Float)) { object[2] = *value; return true; }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), z, TYPE(ovis, runtime, Int)) { *_output = object[2]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), z, TYPE(ovis, runtime, Int)) { object[2] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), w, TYPE(ovis, runtime, Int)) { *_output = object[3]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), w, TYPE(ovis, runtime, Int)) { object[3] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), x, TYPE(ovis, runtime, Int)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), x, TYPE(ovis, runtime, Int)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), y, TYPE(ovis, runtime, Int)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), y, TYPE(ovis, runtime, Int)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), z, TYPE(ovis, runtime, Int)) { *_output = object[2]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), z, TYPE(ovis, runtime, Int)) { object[2] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4I), w, TYPE(ovis, runtime, Int)) { *_output = object[3]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4I), w, TYPE(ovis, runtime, Int)) { object[3] = *value; return true; }
 
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), z, TYPE(ovis, runtime, Float)) { *_output = object[2]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), z, TYPE(ovis, runtime, Float)) { object[2] = *value; return true; }
-TYPE_PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float)) { *_output = object[3]; return true; }
-TYPE_PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float)) { object[3] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), x, TYPE(ovis, runtime, Float)) { *_output = object[0]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), x, TYPE(ovis, runtime, Float)) { object[0] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), y, TYPE(ovis, runtime, Float)) { *_output = object[1]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), y, TYPE(ovis, runtime, Float)) { object[1] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), z, TYPE(ovis, runtime, Float)) { *_output = object[2]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), z, TYPE(ovis, runtime, Float)) { object[2] = *value; return true; }
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float)) { *_output = object[3]; return true; }
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float)) { object[3] = *value; return true; }
 
-// TYPE_PROPERTY_GETTER_DECL(
+// PROPERTY_GETTER_DECL(

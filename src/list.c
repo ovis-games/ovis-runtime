@@ -89,7 +89,7 @@ GENERIC_INSTANTIATION_IMPL(TYPE(ovis, runtime, List)) {
 }
 
 
-DECLARE_PROPERTY_TYPE_GETTER(
+DECLARE_PROPERTY_GETTER(
     TYPE(ovis, runtime, List),
     length,
     TYPE(ovis, runtime, Int)

@@ -20,12 +20,7 @@ void EventStorage::emit(const void* event) {
 }
 
 int32_t EventStorage::count() const {
-  int32_t count;
-  TYPE_PROPERTY_GETTER_PREFIX(
-      TYPE(ovis, runtime, List),
-      length
-  )(m_list_type, &m_events, &count);
-  return count;
+  return m_events.size;
 }
 
 void* EventStorage::event_ptr(int32_t index) {
