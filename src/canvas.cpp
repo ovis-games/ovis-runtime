@@ -33,7 +33,14 @@ EM_BOOL on_mouse_move(int event_type, const EmscriptenMouseEvent* mouse_event, v
     .relative_screen_space_position = {dx, dy},
   };
   mouse_move_storage->emit(&event);
-  printf("count: %d\n", mouse_move_storage->count());
+  return true;
+}
+
+EM_BOOL on_mouse_down(int event_type, const EmscriptenMouseEvent* mouse_event, void* user_data) {
+  auto scene = static_cast<Scene*>(user_data);
+  auto mouse_move_storage = scene->get_event_storage(RESOURCE_ID(TYPE(ovis, runtime, MouseButtonEvent)));
+  MouseButtonEvent event {};
+  mouse_move_storage->emit(&event);
   return true;
 }
 
@@ -50,7 +57,18 @@ struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
     emscripten_webgl_make_context_current(context);
   }
 
+  double canvas_css_width;
+  double canvas_css_height;
+  if (emscripten_get_element_css_size(canvas_id, &canvas_css_width, &canvas_css_height) == EMSCRIPTEN_RESULT_SUCCESS &&
+      (canvas_css_width > 0 && canvas_css_height > 0)) {
+    TYPE(ovis, runtime, ViewportDimensions) dimensions;
+    dimensions[0] = canvas_css_width;
+    dimensions[1] = canvas_css_height;
+    scene->get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, ViewportDimensions)))->emplace(&dimensions);
+  }
+
   emscripten_set_mousemove_callback(canvas_id, scene, 0, on_mouse_move);
+  emscripten_set_mousedown_callback(canvas_id, scene, 0, on_mouse_down);
 
 
   return new Canvas{ 
@@ -61,6 +79,7 @@ struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id) {
 
 void ovis_canvas_destroy(struct Canvas* canvas) {
   emscripten_set_mousemove_callback(canvas->id, nullptr, 0, nullptr);
+  emscripten_set_mousedown_callback(canvas->id, nullptr, 0, nullptr);
   free(canvas->id);
   delete canvas;
 }
@@ -82,3 +101,4 @@ __attribute__((constructor)) void setup_clear_framebuffer_job() {
 }
 
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ClearColor, RESOURCE_KIND_SCENE_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec4F)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, ViewportDimensions, RESOURCE_KIND_SCENE_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec2F)));
