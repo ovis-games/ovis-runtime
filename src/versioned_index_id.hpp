@@ -3,8 +3,12 @@
 #include <cstddef>
 #include <cstdint>
 
-template <typename T = int32_t, std::size_t VERSION_BITS = 8, std::size_t INDEX_BITS = sizeof(T) * 8 - VERSION_BITS>
+template <typename T = uint32_t, std::size_t VERSION_BITS_ = 8, std::size_t INDEX_BITS_ = sizeof(T) * 8 - VERSION_BITS_>
 struct VersionedIndexId {
+  static constexpr std::size_t VERSION_BITS = VERSION_BITS_;
+  static constexpr std::size_t INDEX_BITS = INDEX_BITS_;
+  using Type = T;
+
   union Union {
     T id;
     struct {

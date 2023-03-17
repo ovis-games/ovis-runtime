@@ -8,6 +8,7 @@ TEST_CASE("Basic types exists and are property sized / aligned", "[ovis][runtime
     SECTION("Bool") {
       REQUIRE(SIZE_OF(TYPE(ovis, runtime, Bool)) == 1);
       REQUIRE(ALIGN_OF(TYPE(ovis, runtime, Bool)) == 1);
+      // REQUIRE(STRIDE_OF(TYPE(ovis, runtime, Bool)) == 1);
     }
     SECTION("Int") {
       REQUIRE(SIZE_OF(TYPE(ovis, runtime, Int)) == 4);

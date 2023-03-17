@@ -1,4 +1,4 @@
-#include "scene_components_storage.hpp"
+#include "scene_component_storage.hpp"
 
 #include "scene.hpp"
 #include <cstdlib>

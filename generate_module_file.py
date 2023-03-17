@@ -24,6 +24,7 @@ exprs["type_property_setter"] = "DECLARE_PROPERTY_SETTER\s*\(\s*{type_reference}
 exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
+exprs["viewport_component"] = "VIEWPORT_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["parameter"] = "PARAMETER\s*\(\s*(\w+)\s*,\s*{type_reference}\s*\)".format_map(exprs)
 exprs["function_reference"] = "FUNCTION\s*{reference}".format_map(exprs)
@@ -127,6 +128,11 @@ for f in files:
         module = "{}/{}".format(m[1], m[2])
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
         type_["resource"] = "Event"
+
+    for m in re.finditer(exprs["viewport_component"], content):
+        module = "{}/{}".format(m[1], m[2])
+        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
+        type_["resource"] = "ViewportComponent"
 
     for m in re.finditer(exprs["type_property"], content):
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])

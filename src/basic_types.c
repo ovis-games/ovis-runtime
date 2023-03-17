@@ -7,19 +7,19 @@
 
 #include "ovis/runtime/error.h"
 
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Bool));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Int));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Float));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec2I));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec2F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec3I));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec3F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec4I));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Vec4F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat2x2F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x3F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat3x4F));
-DEFINE_BASIC_TYPE(TYPE(ovis, runtime, Mat4x4F));
+DEFINE_BASIC_TYPE(ovis, runtime, Bool);
+DEFINE_BASIC_TYPE(ovis, runtime, Int);
+DEFINE_BASIC_TYPE(ovis, runtime, Float);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec2I);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec2F);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec3I);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec3F);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec4I);
+DEFINE_BASIC_TYPE(ovis, runtime, Vec4F);
+DEFINE_BASIC_TYPE(ovis, runtime, Mat2x2F);
+DEFINE_BASIC_TYPE(ovis, runtime, Mat3x3F);
+DEFINE_BASIC_TYPE(ovis, runtime, Mat3x4F);
+DEFINE_BASIC_TYPE(ovis, runtime, Mat4x4F);
 
 
 TYPE_FUNCTION_IMPL(

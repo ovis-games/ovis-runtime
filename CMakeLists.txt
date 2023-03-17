@@ -50,8 +50,10 @@ add_library(
   include/ovis/runtime/canvas.h src/canvas.cpp
 
   src/scheduler.hpp src/scheduler.cpp
+  src/id_list.hpp src/id_list.cpp
   src/resource_storage.hpp src/resource_storage.cpp
-  src/scene_components_storage.hpp src/scene_components_storage.cpp
+  src/scene_component_storage.hpp src/scene_component_storage.cpp
+  src/indexed_component_storage.hpp src/indexed_component_storage.cpp
   src/event_storage.hpp src/event_storage.cpp
 )
 

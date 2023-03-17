@@ -20,11 +20,13 @@ typedef const struct TypeInfo* Generic;
 struct TypeInfo {
   intptr_t size;
   intptr_t align;
+  intptr_t stride;
   InitializeFunction initialize;
   DestroyFunction destroy;
   CloneFunction clone;
   intptr_t generic_count;
   Generic* generics;
+  const char* name;
 };
 
 struct GenericTypeInstantiation {

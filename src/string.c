@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdalign.h>
 
-TYPE_INFO_IMPL(TYPE(ovis, runtime, String));
+TYPE_INFO_IMPL(ovis, runtime, String);
 
 TYPE_INITIALIZE_IMPL(TYPE(ovis, runtime, String));
 

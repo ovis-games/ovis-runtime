@@ -40,8 +40,20 @@
 #define TYPE_INFO(type) CONCAT(type, _type)
 #define SIZE_OF(type) TYPE_INFO(type).size
 #define ALIGN_OF(type) TYPE_INFO(type).align
+#define STRIDE_OF(type) TYPE_INFO(type).stride
 #define TYPE_INFO_DECL(type) extern const struct TypeInfo TYPE_INFO(type)
-#define TYPE_INFO_IMPL(type) const struct TypeInfo TYPE_INFO(type) = { sizeof(type), alignof(type), TYPE_INITIALIZE(type), TYPE_DESTROY(type), TYPE_CLONE(type), 0, NULL }
+#define TYPE_INFO_IMPL(owner, project, type) \
+  const struct TypeInfo TYPE_INFO(TYPE(owner, project, type)) = { \
+    sizeof(TYPE(owner, project, type)), \
+    alignof(TYPE(owner, project, type)), \
+    sizeof(TYPE(owner, project, type)) + (alignof(TYPE(owner, project, type)) - (sizeof(TYPE(owner, project, type)) & (alignof(TYPE(owner, project, type)) - 1))), \
+    TYPE_INITIALIZE(TYPE(owner, project, type)), \
+    TYPE_DESTROY(TYPE(owner, project, type)), \
+    TYPE_CLONE(TYPE(owner, project, type)), \
+    0, \
+    NULL, \
+    #owner "/" #project "/" #type \
+  }
 
 #define DECLARE_TYPE(owner, project, type) \
   TYPE_INITIALIZE_DECL(TYPE(owner, project, type)); \
@@ -92,11 +104,11 @@
   typedef ctype* TYPE_PTR(type)
 #endif
 
-#define DEFINE_BASIC_TYPE(type) \
-  TYPE_INITIALIZE_IMPL(type); \
-  TYPE_DESTROY_IMPL(type); \
-  TYPE_CLONE_IMPL(type); \
-  TYPE_INFO_IMPL(type)
+#define DEFINE_BASIC_TYPE(owner, project, type) \
+  TYPE_INITIALIZE_IMPL(TYPE(owner, project, type)); \
+  TYPE_DESTROY_IMPL(TYPE(owner, project, type)); \
+  TYPE_CLONE_IMPL(TYPE(owner, project, type)); \
+  TYPE_INFO_IMPL(owner, project, type)
 
 #define DECLARE_TYPE_ALIAS(alias, type) \
   typedef type alias; \
@@ -106,6 +118,7 @@
 #define RESOURCE_ID(type) CONCAT(type, _resource_id)
 #define EVENT(type) extern int32_t RESOURCE_ID(type)
 #define SCENE_COMPONENT(type) extern int32_t RESOURCE_ID(type)
+#define VIEWPORT_COMPONENT(type) extern int32_t RESOURCE_ID(type)
 
 #define RESOURCE_IMPL(owner, project, type, kind) \
   RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, TYPE_INFO(TYPE(owner, project, type))) \

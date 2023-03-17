@@ -30,7 +30,7 @@ struct Test {
 };
 TYPEDEF(Test, TYPE(ovis, test, Test));
 DECLARE_TYPE(ovis, test, Test);
-DEFINE_BASIC_TYPE(TYPE(ovis, test, Test));
+DEFINE_BASIC_TYPE(ovis, test, Test);
 
 bool output_iterated = false;
 bool output_iterator(void**, void** outputs) {
