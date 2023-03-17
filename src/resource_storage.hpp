@@ -12,4 +12,3 @@ class ResourceStorage {
   private:
     const Resource* m_resource;
 };
-

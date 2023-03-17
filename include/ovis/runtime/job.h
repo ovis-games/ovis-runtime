@@ -8,14 +8,14 @@ extern "C" {
 
 #include <stdint.h>
 
-typedef bool(*JobFunction)(struct Scene*);
+typedef bool (*JobFunction)(struct Scene*);
 typedef struct {
-  const char* name;
-  JobFunction function;
-  int32_t resource_access_count;
-  ResourceAccess* resource_access;
-  int32_t dependency_count;
-  const char** dependencies;
+    const char* name;
+    JobFunction function;
+    int32_t resource_access_count;
+    ResourceAccess* resource_access;
+    int32_t dependency_count;
+    const char** dependencies;
 } Job;
 
 bool register_job(const char* name, JobFunction function, int32_t resource_access_count, const ResourceAccess resource_access[]);

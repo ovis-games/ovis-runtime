@@ -6,37 +6,37 @@
 SceneComponentStorage::SceneComponentStorage(const Resource* resource) : ResourceStorage(resource) {}
 
 SceneComponentStorage::~SceneComponentStorage() {
-  reset();
+    reset();
 }
 
 void* SceneComponentStorage::emplace(const void* src) {
-  if (m_component_ptr == nullptr) {
-    m_component_ptr = aligned_alloc(resource()->type->align, resource()->type->size);
-    
-    if (src) {
-      if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
-        free(m_component_ptr);
-        m_component_ptr = nullptr;
-      }
-    } else {
-      resource()->type->initialize(resource()->type, m_component_ptr);
+    if (m_component_ptr == nullptr) {
+        m_component_ptr = aligned_alloc(resource()->type->align, resource()->type->size);
+
+        if (src) {
+            if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
+                free(m_component_ptr);
+                m_component_ptr = nullptr;
+            }
+        } else {
+            resource()->type->initialize(resource()->type, m_component_ptr);
+        }
+    } else if (src) {
+        resource()->type->destroy(resource()->type, m_component_ptr);
+        if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
+            free(m_component_ptr);
+            m_component_ptr = nullptr;
+        }
     }
-  } else if (src) {
-    resource()->type->destroy(resource()->type, m_component_ptr);
-    if (!resource()->type->clone(resource()->type, src, m_component_ptr)) {
-      free(m_component_ptr);
-      m_component_ptr = nullptr;
-    }
-  }
-  return m_component_ptr;
+    return m_component_ptr;
 }
 
 void SceneComponentStorage::reset() {
-  if (m_component_ptr == nullptr) {
-    return;
-  }
+    if (m_component_ptr == nullptr) {
+        return;
+    }
 
-  resource()->type->destroy(resource()->type, m_component_ptr);
-  free(m_component_ptr); // free_sized() is only available in C
-  m_component_ptr = nullptr;
+    resource()->type->destroy(resource()->type, m_component_ptr);
+    free(m_component_ptr); // free_sized() is only available in C
+    m_component_ptr = nullptr;
 }

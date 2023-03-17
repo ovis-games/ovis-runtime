@@ -62,20 +62,19 @@ void Scene::tick(float delta_time) {
     }
 }
 
-bool ovis_scene_iterate(struct Scene* scene,
-                        int32_t input_resouces_ids_count, const int32_t* input_resouces_ids,
-                        int32_t output_resouces_ids_count, const int32_t* output_resouces_ids,
-                        IterateCallback callback) {
+bool ovis_scene_iterate(struct Scene* scene, int32_t input_resouces_ids_count, const int32_t* input_resouces_ids, int32_t output_resouces_ids_count, const int32_t* output_resouces_ids, IterateCallback callback) {
     return scene->iterate(
         input_resouces_ids_count, input_resouces_ids,
         output_resouces_ids_count, output_resouces_ids,
-        callback);
+        callback
+    );
 }
 
 bool Scene::iterate(
     int32_t input_resource_ids_count, const int32_t* input_resource_ids,
     int32_t output_resource_ids_count, const int32_t* output_resource_ids,
-    IterateCallback callback) {
+    IterateCallback callback
+) {
     EventStorage* event_storage = nullptr;
     intptr_t event_input_index = 0;
 

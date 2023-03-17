@@ -21,6 +21,7 @@ option(OVIS_COMPILER "Path to the ovis compiler" NONE)
 include(CTest)
 include(cmake/CPM.cmake)
 include(cmake/emscripten.cmake)
+include(cmake/ClangFormat.cmake)
 
 set(CMAKE_C_STANDARD 99)
 set(C_STANDARD_REQUIRED ON)
@@ -55,6 +56,10 @@ add_library(
   src/scene_component_storage.hpp src/scene_component_storage.cpp
   src/indexed_component_storage.hpp src/indexed_component_storage.cpp
   src/event_storage.hpp src/event_storage.cpp
+)
+
+add_clang_format(
+  ovis-runtime
 )
 
 get_target_property(RUNTIME_SOURCES ovis-runtime SOURCES)

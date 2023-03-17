@@ -1,16 +1,16 @@
 #pragma once
 
-#include "ovis/runtime/type.h"
 #include "ovis/runtime/basic_types.h"
+#include "ovis/runtime/type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct {
-  void* data;
-  int32_t capacity;
-  int32_t size;
+    void* data;
+    int32_t capacity;
+    int32_t size;
 } List;
 TYPEDEF(List, TYPE(ovis, runtime, List));
 
@@ -41,7 +41,6 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
 //     TYPE(ovis, runtime, List),
 //     clear
 // );
-
 
 // void mod__ovis__runtime__List_initialize(const struct TypeInfo* list_type, void* ptr);
 // void mod__ovis__runtime__List_destroy(const struct TypeInfo* list_type, void* ptr);

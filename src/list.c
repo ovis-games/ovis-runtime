@@ -99,7 +99,8 @@ GENERIC_INSTANTIATION_IMPL(TYPE(ovis, runtime, List)) {
 DECLARE_PROPERTY_GETTER(
     TYPE(ovis, runtime, List),
     length,
-    TYPE(ovis, runtime, Int)) {
+    TYPE(ovis, runtime, Int)
+) {
     *_output = object->size;
     return true;
 }
@@ -107,7 +108,8 @@ DECLARE_PROPERTY_GETTER(
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, List),
     add,
-    GENERIC_PARAMETER(value, T)) {
+    GENERIC_PARAMETER(value, T)
+) {
     if (self->size == self->capacity) {
         if (!grow_list(type_info, self)) {
             return false;
@@ -126,7 +128,8 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, List),
     remove,
-    PARAMETER(index, TYPE(ovis, runtime, Int))) {
+    PARAMETER(index, TYPE(ovis, runtime, Int))
+) {
     void* element_to_remove = list_element_ptr(type_info, self, *index);
     const struct TypeInfo* element_type = list_element_type(type_info);
     element_type->destroy(element_type, element_to_remove);

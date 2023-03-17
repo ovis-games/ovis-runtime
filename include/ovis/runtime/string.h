@@ -1,17 +1,17 @@
 #pragma once
 
+#include "ovis/runtime/basic_types.h"
 #include "ovis/runtime/symbols.h"
 #include "ovis/runtime/type.h"
-#include "ovis/runtime/basic_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct String {
-  char* data;
-  int32_t capacity;
-  int32_t size;
+    char* data;
+    int32_t capacity;
+    int32_t size;
 };
 TYPEDEF(struct String, TYPE(ovis, runtime, String));
 

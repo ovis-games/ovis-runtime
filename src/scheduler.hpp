@@ -1,14 +1,14 @@
 #pragma once
 
-#include <vector>
 #include "ovis/runtime/job.h"
+#include <vector>
 
 class Scheduler {
-public:
-  Scheduler();
+  public:
+    Scheduler();
 
-  void run_jobs(struct Scene* scene);
+    void run_jobs(struct Scene* scene);
 
-private:
-  std::vector<JobFunction> m_jobs;
+  private:
+    std::vector<JobFunction> m_jobs;
 };

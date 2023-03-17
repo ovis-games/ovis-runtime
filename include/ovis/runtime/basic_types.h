@@ -6,8 +6,8 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 TYPEDEF(bool, TYPE(ovis, runtime, Bool));

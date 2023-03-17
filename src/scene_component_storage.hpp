@@ -1,9 +1,9 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
 #include "ovis/runtime/type.h"
 #include "resource_storage.hpp"
+#include <string>
+#include <unordered_map>
 
 class SceneComponentStorage final : public ResourceStorage {
   public:
