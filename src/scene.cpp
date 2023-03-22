@@ -31,16 +31,19 @@ Scene::Scene() {
 
     for (const auto& resource : RESOURCES) {
         switch (resource.kind) {
-        case RESOURCE_KIND_SCENE_COMPONENT:
-            m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<SceneComponentStorage>(&resource);
-            break;
+            case RESOURCE_KIND_EVENT:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<EventStorage>(&resource);
+                break;
 
-        case RESOURCE_KIND_EVENT:
-            m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<EventStorage>(&resource);
-            break;
+            case RESOURCE_KIND_SCENE_COMPONENT:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<SceneComponentStorage>(&resource);
+                break;
 
-        case RESOURCE_KIND_VIEWPORT_COMPONENT:
-            m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
+            case RESOURCE_KIND_VIEWPORT_COMPONENT:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
+
+            case RESOURCE_KIND_ENTITY_COMPONENT:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
         }
     }
 }
@@ -82,6 +85,10 @@ bool Scene::iterate(
     IndexedComponentStorage* input_viewport_component_storages[input_resource_ids_count];
     int input_viewport_component_indices[input_resource_ids_count];
 
+    int input_entity_components_count = 0;
+    IndexedComponentStorage* input_entity_component_storages[input_resource_ids_count];
+    int input_entity_component_indices[input_resource_ids_count];
+
     void* input_resources[input_resource_ids_count];
     void* output_resources[output_resource_ids_count];
 
@@ -89,31 +96,38 @@ bool Scene::iterate(
         auto resource = get_resource(input_resource_ids[i]);
 
         switch (resource->kind) {
-        case RESOURCE_KIND_SCENE_COMPONENT: {
-            auto storage = get_scene_component_storage(resource->id);
-            assert(storage);
-            if (auto component = storage->get(); component != nullptr) {
-                input_resources[i] = component;
-            } else {
-                // Scene component does not exist, we can stop the iteration early
-                return true;
+            case RESOURCE_KIND_EVENT: {
+                assert(event_storage == nullptr && "We currently can only handle one event as input");
+                event_storage = get_event_storage(resource->id);
+                event_input_index = i;
+                break;
             }
-            break;
-        }
 
-        case RESOURCE_KIND_EVENT: {
-            assert(event_storage == nullptr && "We currently can only handle one event as input");
-            event_storage = get_event_storage(resource->id);
-            event_input_index = i;
-            break;
-        }
+            case RESOURCE_KIND_SCENE_COMPONENT: {
+                auto storage = get_scene_component_storage(resource->id);
+                assert(storage);
+                if (auto component = storage->get(); component != nullptr) {
+                    input_resources[i] = component;
+                } else {
+                    // Scene component does not exist, we can stop the iteration early
+                    return true;
+                }
+                break;
+            }
 
-        case RESOURCE_KIND_VIEWPORT_COMPONENT: {
-            input_viewport_component_storages[input_viewport_components_count] = get_indexed_component_storage(resource->id);
-            input_viewport_component_indices[input_viewport_components_count] = i;
-            ++input_viewport_components_count;
-            break;
-        }
+            case RESOURCE_KIND_VIEWPORT_COMPONENT: {
+                input_viewport_component_storages[input_viewport_components_count] = get_indexed_component_storage(resource->id);
+                input_viewport_component_indices[input_viewport_components_count] = i;
+                ++input_viewport_components_count;
+                break;
+            }
+
+            case RESOURCE_KIND_ENTITY_COMPONENT: {
+                input_entity_component_storages[input_entity_components_count] = get_indexed_component_storage(resource->id);
+                input_entity_component_indices[input_entity_components_count] = i;
+                ++input_entity_components_count;
+                break;
+            }
         }
     }
     for (int i = 0; i < output_resource_ids_count; ++i) {
@@ -140,33 +154,55 @@ bool Scene::iterate(
                 continue;
             }
 
-            if (callback(input_resources, output_resources)) {
-                for (int i = 0; i < output_resource_ids_count; ++i) {
-                    auto resource = get_resource(output_resource_ids[i]);
-                    switch (resource->kind) {
-                    case RESOURCE_KIND_SCENE_COMPONENT: {
-                        auto scene_component_storage = get_scene_component_storage(output_resource_ids[i]);
-                        assert(scene_component_storage);
-                        // TODO: move the value into the storage instead of copying it
-                        scene_component_storage->emplace(output_resources[i]);
-                        break;
+            // TODO: iterator over entity ids of the storage with least components
+            for (int entity_index = 0; (entity_index == 0 && input_entity_components_count == 0) || entity_index < m_entities.count(); ++entity_index) {
+                const auto entity_id = m_entities[entity_index];
+                bool skip_entity = false;
+                for (int entity_component_index = 0; entity_component_index < input_entity_components_count && !skip_entity; ++entity_component_index) {
+                    if (auto component = input_entity_component_storages[entity_component_index]->component_ptr(entity_id); component != nullptr) {
+                        input_resources[input_entity_component_indices[entity_index]] = component;
+                    } else {
+                        skip_entity = true;
                     }
-
-                    case RESOURCE_KIND_EVENT:
-                        assert(false && "not implemented yet");
-                        break;
-
-                    case RESOURCE_KIND_VIEWPORT_COMPONENT: {
-                        auto storage = get_indexed_component_storage(resource->id);
-                        assert(storage);
-                        storage->emplace(viewport_id, output_resources[i]);
-                        break;
-                    }
-                    }
-                    resource->type->destroy(resource->type, output_resources[i]);
                 }
-            } else {
-                return false;
+                if (skip_entity) {
+                    continue;
+                }
+
+                if (callback(input_resources, output_resources)) {
+                    for (int i = 0; i < output_resource_ids_count; ++i) {
+                        auto resource = get_resource(output_resource_ids[i]);
+                        switch (resource->kind) {
+                            case RESOURCE_KIND_EVENT:
+                                assert(false && "not implemented yet");
+                                break;
+
+                            case RESOURCE_KIND_SCENE_COMPONENT: {
+                                auto scene_component_storage = get_scene_component_storage(output_resource_ids[i]);
+                                assert(scene_component_storage);
+                                // TODO: move the value into the storage instead of copying it
+                                scene_component_storage->emplace(output_resources[i]);
+                                break;
+                            }
+
+                            case RESOURCE_KIND_VIEWPORT_COMPONENT: {
+                                auto storage = get_indexed_component_storage(resource->id);
+                                assert(storage);
+                                storage->emplace(viewport_id, output_resources[i]);
+                                break;
+                            }
+                            case RESOURCE_KIND_ENTITY_COMPONENT: {
+                                auto storage = get_indexed_component_storage(resource->id);
+                                assert(storage);
+                                storage->emplace(entity_id, output_resources[i]);
+                                break;
+                            }
+                        }
+                        resource->type->destroy(resource->type, output_resources[i]);
+                    }
+                } else {
+                    return false;
+                }
             }
         }
     }

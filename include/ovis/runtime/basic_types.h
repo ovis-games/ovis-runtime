@@ -172,16 +172,16 @@ DECLARE_PROPERTY(TYPE(ovis, runtime, Vec4F), y, TYPE(ovis, runtime, Float));
 DECLARE_PROPERTY(TYPE(ovis, runtime, Vec4F), z, TYPE(ovis, runtime, Float));
 DECLARE_PROPERTY(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float));
 
-typedef TYPE(ovis, runtime, Vec2F) TYPE(ovis, runtime, Mat2x2F)[2];
+TYPEDEF_ARRAY(TYPE(ovis, runtime, Vec2F), 2, TYPE(ovis, runtime, Mat2x2F));
 DECLARE_TYPE(ovis, runtime, Mat2x2F);
 
-typedef TYPE(ovis, runtime, Vec3F) TYPE(ovis, runtime, Mat3x3F)[3];
+TYPEDEF_ARRAY(TYPE(ovis, runtime, Vec3F), 3, TYPE(ovis, runtime, Mat3x3F));
 DECLARE_TYPE(ovis, runtime, Mat3x3F);
 
-typedef TYPE(ovis, runtime, Vec4F) TYPE(ovis, runtime, Mat3x4F)[3];
+TYPEDEF_ARRAY(TYPE(ovis, runtime, Vec4F), 3, TYPE(ovis, runtime, Mat3x4F));
 DECLARE_TYPE(ovis, runtime, Mat3x4F);
 
-typedef TYPE(ovis, runtime, Vec4F) TYPE(ovis, runtime, Mat4x4F)[4];
+TYPEDEF_ARRAY(TYPE(ovis, runtime, Vec4F), 4, TYPE(ovis, runtime, Mat4x4F));
 DECLARE_TYPE(ovis, runtime, Mat4x4F);
 
 #ifdef __cplusplus

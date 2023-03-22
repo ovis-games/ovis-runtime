@@ -108,3 +108,5 @@ __attribute__((constructor)) void setup_clear_framebuffer_job() {
 
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ClearColor, RESOURCE_KIND_VIEWPORT_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec4F)));
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ViewportDimensions, RESOURCE_KIND_VIEWPORT_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec2F)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, ProjectionMatrix, RESOURCE_KIND_VIEWPORT_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Mat4x4F)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, ViewMatrix, RESOURCE_KIND_VIEWPORT_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Mat3x4F)));

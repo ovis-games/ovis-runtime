@@ -10,3 +10,4 @@
 #include "runtime/string.h"
 #include "runtime/symbols.h"
 #include "runtime/type.h"
+#include "runtime/entity_descriptor.h"

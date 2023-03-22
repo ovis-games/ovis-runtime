@@ -18,9 +18,10 @@ typedef struct {
 } ResourceAccess;
 
 typedef enum {
-    RESOURCE_KIND_SCENE_COMPONENT,
     RESOURCE_KIND_EVENT,
+    RESOURCE_KIND_SCENE_COMPONENT,
     RESOURCE_KIND_VIEWPORT_COMPONENT,
+    RESOURCE_KIND_ENTITY_COMPONENT,
 } ResourceKind;
 
 typedef int32_t ResourceId;

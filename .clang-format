@@ -3,6 +3,7 @@ IndentWidth: 4
 ColumnLimit: 0
 AlignAfterOpenBracket: BlockIndent
 AllowShortFunctionsOnASingleLine: All
+IndentCaseLabels: true
 ---
 Language: Cpp
 

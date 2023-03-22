@@ -26,11 +26,16 @@ exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format
 exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 exprs["viewport_component"] = "VIEWPORT_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
-exprs["parameter"] = "PARAMETER\s*\(\s*(\w+)\s*,\s*{type_reference}\s*\)".format_map(exprs)
+exprs["generic"] = "GENERIC\s*\(\s*(\w+)\s*\)".format_map(exprs)
+exprs["generics"] = "(?:,\s*{generic}\s*)*".format_map(exprs)
+exprs["parameter"] = "(?:PARAMETER|GENERIC_PARAMETER)\s*\(\s*(\w+)\s*,\s*({type_reference}|(\w+))\s*\)".format_map(exprs)
 exprs["function_reference"] = "FUNCTION\s*{reference}".format_map(exprs)
 exprs["result"] = "RESULT\s*\(?\s*{type_reference}\s*\)".format_map(exprs)
-exprs["function_declaration"] = "DECLARE_FUNCTION\s*\(\s*{function_reference}\s*(?:\s*,\s*{parameter})*(?:\s*,\s*{result})?\s*\)\s*;".format_map(exprs)
-exprs["type_function_declaration"] = "DECLARE_TYPE_FUNCTION\s*\(\s*{type_reference}\s*,\s*(\w+)\s*(?:\s*,\s*{parameter})*(?:\s*,\s*{result})?\s*\)\s*;".format_map(exprs)
+
+exprs["parameters_and_result"] = "(?:\s*,\s*{parameter})*(?:\s*,\s*{result})?".format_map(exprs)
+exprs["free_function"] = "DECLARE_FUNCTION\s*\(\s*{function_reference}".format_map(exprs)
+exprs["type_function"] = "DECLARE_(TYPE_FUNCTION|MEMBER_FUNCTION|MUTABLE_MEMBER_FUNCTION)\s*\(\s*{type_reference}\s*,\s*(\w+)".format_map(exprs)
+exprs["function"] = "(?:{free_function}|{type_function})\s*{generics}\s*{parameters_and_result}\s*\)\s*;".format_map(exprs)
 
 modules = {}
 
@@ -64,6 +69,12 @@ def create_param(name, owner, project, t):
     return {
         "name": name,
         "type": "{}/{}/{}".format(owner, project, t),
+    }
+
+def create_generic_param(name, g):
+    return {
+        "name": name,
+        "type": g,
     }
 
 def create_property(name, owner, project, t):
@@ -161,29 +172,42 @@ for f in files:
         else:
             prop["set"] = True
 
-    for m in re.finditer(exprs["type_function_declaration"], content):
-        t = get_type("{}/{}".format(m[1], m[2]), m[3])
-        f = create_function_decl(m[4])["Function"]
-        for i in range(0, len(m.captures(5))):
-            f["inputs"].append(create_param(m.captures(5)[i], m.captures(6)[i], m.captures(7)[i], m.captures(8)[i]))
-        if m[9] != None:
-            f["output"] = "{}/{}/{}".format(m[9], m[10], m[11])
-        t["functions"].append(f)
     
-    for m in re.finditer(exprs["function_declaration"], content):
-        module = "{}/{}".format(m[1], m[2])
-        if not module in modules:
-            modules[module] = {
-                "module": module,
-                "declarations": []
-            }
-        f = create_function_decl(m[3])
-        for i in range(0, len(m.captures(4))):
-            f["Function"]["inputs"].append(create_param(m.captures(4)[i], m.captures(5)[i], m.captures(6)[i], m.captures(7)[i]))
-        if m[8] != None:
-            f["Function"]["output"] = "{}/{}/{}".format(m[8], m[9], m[10])
+    for m in re.finditer(exprs["function"], content):
+        if m[1]: # free function
+            f = create_function_decl(m[3])
+            module = "{}/{}".format(m[1], m[2])
+            if not module in modules:
+                modules[module] = {
+                    "module": module,
+                    "declarations": []
+                }
+            modules[module]["declarations"].append(f)
+        else:
+            f = create_function_decl(m[8])
+            if m[4] == "TYPE_FUNCTION":
+                pass
+            elif m[4] == "MEMBER_FUNCTION":
+                f["Function"]["inputs"].append(create_param("self", m[5], m[6], m[7]))
+            elif m[4] == "MUTABLE_MEMBER_FUNCTION":
+                f["Function"]["inputs"].append(create_param("self", m[5], m[6], m[7]))
+            t = get_type("{}/{}".format(m[5], m[6]), m[7])
+            t["functions"].append(f["Function"])
 
-        modules[module]["declarations"].append(f)
+        f["Function"]["generics"] = m.captures(9)
+
+        input_base = 10
+        for i in range(0, len(m.captures(input_base))):
+            p = re.match(exprs["type_reference"], m.captures(input_base + 1)[i])
+            if p:
+                param = create_param(m.captures(input_base)[i], p[1], p[2], p[3])
+            else:
+                param = create_generic_param(m.captures(input_base)[i], m.captures(input_base + 1)[i])
+            f["Function"]["inputs"].append(param)
+        
+        output_base = input_base + 6
+        if m[output_base] != None:
+            f["Function"]["output"] = "{}/{}/{}".format(m[output_base + 0], m[output_base + 1], m[output_base + 2])
 
 for m in modules:
     with open("{}.json".format(m.replace("/", "--")), "w") as write:

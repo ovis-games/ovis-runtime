@@ -8,6 +8,7 @@
 #define MODULE(owner, project) mod__ ## owner ## __ ## project
 
 #define FUNCTION(owner, project, function) CONCAT3(MODULE(owner, project), __, function)
+#define GENERIC(name) const struct TypeInfo* name
 #define PARAMETER(name, type) TYPE_CONST_PTR(type) name
 #define MUTABLE_PARAMETER(name, type) type* name
 #define GENERIC_PARAMETER(name, type) const void* name

@@ -52,4 +52,5 @@ class Scene {
     Scheduler m_scheduler;
     std::vector<std::unique_ptr<ResourceStorage>> m_resource_storages;
     IdList m_viewports;
+    IdList m_entities;
 };

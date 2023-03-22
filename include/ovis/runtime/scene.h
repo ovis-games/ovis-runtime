@@ -2,6 +2,7 @@
 
 #include "ovis/runtime/basic_types.h"
 #include "ovis/runtime/resource.h"
+#include "ovis/runtime/symbols.h"
 #include "type.h"
 
 #ifdef __cplusplus
