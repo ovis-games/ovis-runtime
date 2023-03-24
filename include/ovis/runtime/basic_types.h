@@ -51,6 +51,13 @@ DECLARE_TYPE_FUNCTION(
 );
 
 DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Int), equals,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
+
+DECLARE_TYPE_FUNCTION(
     TYPE(ovis, runtime, Int), add,
     PARAMETER(lhs, TYPE(ovis, runtime, Int)),
     PARAMETER(rhs, TYPE(ovis, runtime, Int)),
@@ -80,6 +87,13 @@ DECLARE_TYPE_FUNCTION(
 
 TYPEDEF(float, TYPE(ovis, runtime, Float));
 DECLARE_TYPE(ovis, runtime, Float);
+
+DECLARE_TYPE_FUNCTION(
+    TYPE(ovis, runtime, Float), equals,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Bool))
+);
 
 DECLARE_TYPE_FUNCTION(
     TYPE(ovis, runtime, Float), add,

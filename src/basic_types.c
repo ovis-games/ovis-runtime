@@ -72,6 +72,16 @@ TYPE_FUNCTION_IMPL(
 }
 
 TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Int), equals,
+    PARAMETER(lhs, TYPE(ovis, runtime, Int)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Int)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+    *_output = *lhs == *rhs;
+    return true;
+}
+
+TYPE_FUNCTION_IMPL(
     TYPE(ovis, runtime, Int), add,
     PARAMETER(lhs, TYPE(ovis, runtime, Int)),
     PARAMETER(rhs, TYPE(ovis, runtime, Int)),
@@ -111,6 +121,16 @@ TYPE_FUNCTION_IMPL(
         RETURN_ERROR("cannot divide by 0");
     }
     *_output = *lhs / *rhs;
+    return true;
+}
+
+TYPE_FUNCTION_IMPL(
+    TYPE(ovis, runtime, Float), equals,
+    PARAMETER(lhs, TYPE(ovis, runtime, Float)),
+    PARAMETER(rhs, TYPE(ovis, runtime, Float)),
+    RESULT(TYPE(ovis, runtime, Bool))
+) {
+    *_output = *lhs == *rhs;
     return true;
 }
 
