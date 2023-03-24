@@ -1,5 +1,6 @@
 #pragma once
 
+#include "runtime/error.h"
 #include "runtime/basic_types.h"
 #include "runtime/canvas.h"
 #include "runtime/input_events.h"
