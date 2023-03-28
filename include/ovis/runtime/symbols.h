@@ -63,7 +63,7 @@
   TYPE_INFO_DECL(TYPE(owner, project, type))
 
 #define GENERIC_INSTANTIATION_LIST(type) CONCAT(type, _instantiations)
-#define GENERIC_INSTANTIATION_CALLBACK(type) CONCAT(TYPE(owner, project, type), _instantiation_callback)
+#define GENERIC_INSTANTIATION_CALLBACK(type) CONCAT(type, _instantiation_callback)
 #define GENERIC_INSTANTIATION_IMPL(type_) \
   GenericTypeInstantiationList GENERIC_INSTANTIATION_LIST(type_) = NULL; \
   void GENERIC_INSTANTIATION_CALLBACK(type_)(struct TypeInfo* type)
@@ -76,7 +76,7 @@
   release_generic_type_instantiation(&GENERIC_INSTANTIATION_LIST(type), instance)
 
 #define GENERIC_TYPE(name) const struct TypeInfo* name
-#define DECLARE_GENERIC_TYPE(owner, project, type, ...) DECLARE_TYPE(owner, project, type); \
+#define DECLARE_GENERIC_TYPE(owner, project, type, ...) \
   TYPE_INITIALIZE_DECL(TYPE(owner, project, type)); \
   TYPE_DESTROY_DECL(TYPE(owner, project, type)); \
   TYPE_CLONE_DECL(TYPE(owner, project, type)); \
