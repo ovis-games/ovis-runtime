@@ -49,7 +49,7 @@ class Scene {
 
   private:
     float m_game_time = 0.0f;
-    Scheduler m_scheduler;
+    Scheduler m_update_scheduler;
     std::vector<std::unique_ptr<ResourceStorage>> m_resource_storages;
     IdList m_viewports;
     IdList m_entities;

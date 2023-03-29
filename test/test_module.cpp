@@ -9,7 +9,7 @@ bool job(struct Scene* scene) {
 }
 
 __attribute__((constructor)) void ovis_module_load() {
-  register_job("test_module_job", &job, 0, nullptr);
+  register_job("test_module_job", &job, JOB_KIND_UPDATE, 0, nullptr);
 }
 
 __attribute__((destructor)) void ovis_module_unload() {

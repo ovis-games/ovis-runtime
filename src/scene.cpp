@@ -26,7 +26,7 @@ void ovis_scene_destroy(struct Scene* scene) {
     delete scene;
 }
 
-Scene::Scene() {
+Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
     m_resource_storages.resize(RESOURCES.size());
 
     for (const auto& resource : RESOURCES) {
@@ -46,6 +46,9 @@ Scene::Scene() {
                 m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
         }
     }
+
+    Scheduler setup_scheduler(JOB_KIND_SETUP);
+    setup_scheduler.run_jobs(this);
 }
 
 void Scene::tick(float delta_time) {
@@ -56,7 +59,7 @@ void Scene::tick(float delta_time) {
     assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, GameTime))));
     get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, GameTime)))->emplace(&m_game_time);
 
-    m_scheduler.run_jobs(this);
+    m_update_scheduler.run_jobs(this);
 
     for (auto& resource_storage : m_resource_storages) {
         if (resource_storage->resource()->kind == RESOURCE_KIND_EVENT) {

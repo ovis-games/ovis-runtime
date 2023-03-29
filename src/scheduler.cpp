@@ -1,10 +1,12 @@
 #include "scheduler.hpp"
 #include "job.hpp"
 
-Scheduler::Scheduler() {
+Scheduler::Scheduler(JobKind job_kind) {
     m_jobs.reserve(JOBS.size());
     for (const auto& [name, job] : JOBS) {
-        m_jobs.push_back(job.function);
+        if (job.kind == job_kind) {
+            m_jobs.push_back(job.function);
+        }
     }
 }
 

@@ -3,7 +3,7 @@
 
 std::unordered_map<std::string, Job> JOBS;
 
-bool register_job(const char* name, JobFunction function, int32_t resource_access_count, const ResourceAccess resource_access[]) {
+bool register_job(const char* name, JobFunction function, JobKind kind, int32_t resource_access_count, const ResourceAccess resource_access[]) {
     if (JOBS.contains(name)) {
         return false;
     }
@@ -12,6 +12,7 @@ bool register_job(const char* name, JobFunction function, int32_t resource_acces
     Job job{
         .name = name,
         .function = function,
+        .kind = kind,
         .resource_access_count = 0,
         .resource_access = nullptr,
         .dependency_count = 0,

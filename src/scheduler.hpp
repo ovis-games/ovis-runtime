@@ -5,7 +5,7 @@
 
 class Scheduler {
   public:
-    Scheduler();
+    Scheduler(JobKind job_kind);
 
     void run_jobs(struct Scene* scene);
 

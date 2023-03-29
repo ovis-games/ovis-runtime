@@ -50,9 +50,9 @@ bool output_test(struct Scene* scene) {
 
 TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
   SECTION("registering basic job") {
-    REQUIRE(register_job("foo", &foo, 0, nullptr));
+    REQUIRE(register_job("foo", &foo, JOB_KIND_UPDATE, 0, nullptr));
     REQUIRE(get_job("foo")->function == &foo);
-    REQUIRE(!register_job("foo", &foo, 0, nullptr));
+    REQUIRE(!register_job("foo", &foo, JOB_KIND_UPDATE, 0, nullptr));
     Scene* scene = ovis_scene_create();
     REQUIRE(scene != nullptr);
 
@@ -66,7 +66,7 @@ TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
   }
 
   SECTION("test scene iteration") {
-    REQUIRE(register_job("iteration_test", &iteration_test, 0, nullptr));
+    REQUIRE(register_job("iteration_test", &iteration_test, JOB_KIND_UPDATE, 0, nullptr));
     REQUIRE(get_job("iteration_test")->function == &iteration_test);
     Scene* scene = ovis_scene_create();
     REQUIRE(scene != nullptr);
@@ -87,7 +87,7 @@ TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
     REQUIRE(test_component != nullptr);
     Test_resource_id = test_component->id;
 
-    REQUIRE(register_job("output_test", &output_test, 0, nullptr));
+    REQUIRE(register_job("output_test", &output_test, JOB_KIND_UPDATE, 0, nullptr));
     REQUIRE(get_job("output_test")->function == &output_test);
     Scene* scene = ovis_scene_create();
     REQUIRE(scene != nullptr);

@@ -103,7 +103,7 @@ bool clear_framebuffer(struct Scene* scene) {
 }
 
 __attribute__((constructor)) void setup_clear_framebuffer_job() {
-    register_job("ovis/runtime/clearFramebuffer", &clear_framebuffer, 0, nullptr);
+    register_job("ovis/runtime/clearFramebuffer", &clear_framebuffer, JOB_KIND_UPDATE, 0, nullptr);
 }
 
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ClearColor, RESOURCE_KIND_VIEWPORT_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Vec4F)));
