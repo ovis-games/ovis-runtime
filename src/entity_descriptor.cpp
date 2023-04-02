@@ -1,6 +1,7 @@
 #include "ovis/runtime/entity_descriptor.h"
-#include "ovis/runtime/error.h"
 #include "entity_descriptor.hpp"
+#include "ovis/runtime/error.h"
+#include "ovis/runtime/symbols.h"
 #include <cstdlib>
 
 TYPE_INFO_IMPL(ovis, runtime, EntityDescriptor);
@@ -38,11 +39,15 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
     return true;
 }
 
-const struct TypeInfo* EntityDescriptorList = instantiate_generic_type(
-    &GENERIC_INSTANTIATION_LIST(TYPE(ovis, runtime, List)),
-    1,
-    (Generic[]){ &TYPE_INFO(TYPE(ovis, runtime, EntityDescriptor)) }, 
-    GENERIC_INSTANTIATION_CALLBACK(TYPE(ovis, runtime, List))
-);
+const struct TypeInfo* EntitySpawnList = nullptr;
+int32_t RESOURCE_ID(TYPE(ovis, runtime, EntitySpawnList));
+__attribute__((constructor)) void CONCAT(TYPE(ovis, runtime, EntitySpawnList), _resource_registration)() {
+    EntitySpawnList = instantiate_generic_type(
+        &GENERIC_INSTANTIATION_LIST(TYPE(ovis, runtime, List)),
+        1,
+        (Generic[]){&TYPE_INFO(TYPE(ovis, runtime, EntityDescriptor))},
+        GENERIC_INSTANTIATION_CALLBACK(TYPE(ovis, runtime, List))
+    );
 
-int32_t EntityDescriptorList_resource_id = register_resource("EntityDescriptorList", RESOURCE_KIND_ENTITY_SPAWN_LIST, EntityDescriptorList)->id;
+    RESOURCE_ID(TYPE(ovis, runtime, EntitySpawnList)) = register_resource("ovis/runtime/EntitySpawnList", RESOURCE_KIND_ENTITY_SPAWN_LIST, EntitySpawnList)->id;
+}

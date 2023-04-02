@@ -22,10 +22,10 @@ typedef bool (*IterateCallback)(void**, void**);
 bool ovis_scene_iterate(struct Scene* scene, int32_t input_component_ids_count, const int32_t* input_component_ids, int32_t output_component_ids_count, const int32_t* output_component_ids, IterateCallback callback);
 
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, DeltaTime), TYPE(ovis, runtime, Float));
-SCENE_COMPONENT(TYPE(ovis, runtime, DeltaTime));
+DECLARE_RESOURCE(SceneComponent, TYPE(ovis, runtime, DeltaTime));
 
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, GameTime), TYPE(ovis, runtime, Float));
-SCENE_COMPONENT(TYPE(ovis, runtime, GameTime));
+DECLARE_RESOURCE(SceneComponent, TYPE(ovis, runtime, GameTime));
 
 #ifdef __cplusplus
 }

@@ -12,26 +12,28 @@ for filename in sys.argv:
 
 exprs = {}
 exprs["s"] = "\s*"
-exprs["reference"] = "\((\w+)\s*,\s*(\w+),\s*(\w+)\)"
-exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
+exprs["reference"] = "(\w+)\s*,\s*(\w+)\s*,\s*(\w+)"
+exprs["type_reference"] = "TYPE\s*\(\s*{reference}\s*\)".format_map(exprs)
+exprs["type_reference_with_generics"] = "TYPE\s*\(\s*{reference}\s*(?:,\s*{type_reference}\s*)*\)".format_map(exprs)
 
 exprs["no_newline_space"] = "[ \t]"
 exprs["doc_comment"] = "(?:{no_newline_space}*//(.*)\n)*\s*".format_map(exprs)
-exprs["type_declaration"] = "{doc_comment}DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
+exprs["type_declaration"] = "{doc_comment}DECLARE_TYPE\s*\(\s*{reference}\s*\)\s*;".format_map(exprs)
 exprs["generic_type"] = "GENERIC_TYPE\s*\(\s*(\w+)\s*\)".format_map(exprs)
 exprs["generic_type_declaration"] = "{doc_comment}DECLARE_GENERIC_TYPE{s}\({s}(\w+){s},{s}(\w+),\s(\w+)(?:{s},{s}{generic_type})*{s}\){s};".format_map(exprs)
 exprs["type_property"] = "{doc_comment}DECLARE_PROPERTY\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_property_getter"] = "{doc_comment}DECLARE_PROPERTY_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_property_setter"] = "{doc_comment}DECLARE_PROPERTY_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
-exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
-exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
-exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
-exprs["viewport_component"] = "VIEWPORT_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
+exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference_with_generics}\s*\)\s*;".format_map(exprs)
+exprs["resource_declaration"] = "DECLARE_RESOURCE\s*\((Event|SceneComponent|ViewportComponent|EntitySpawnList)\s*,\s*{type_reference}\s*\)".format_map(exprs)
+# exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
+# exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
+# exprs["viewport_component"] = "VIEWPORT_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["generic"] = "GENERIC\s*\(\s*(\w+)\s*\)".format_map(exprs)
 exprs["generics"] = "(?:,\s*{generic}\s*)*".format_map(exprs)
 exprs["parameter"] = "(?:PARAMETER|GENERIC_PARAMETER)\s*\(\s*(\w+)\s*,\s*({type_reference}|(\w+))\s*\)".format_map(exprs)
-exprs["function_reference"] = "FUNCTION\s*{reference}".format_map(exprs)
+exprs["function_reference"] = "FUNCTION\s*\(\s*{reference}\s*\)".format_map(exprs)
 exprs["result"] = "RESULT\s*\(?\s*{type_reference}\s*\)".format_map(exprs)
 
 exprs["parameters_and_result"] = "(?:\s*,\s*{parameter})*(?:\s*,\s*{result})?".format_map(exprs)
@@ -46,6 +48,14 @@ def create_reference(owner, project, definition):
         "owner": owner,
         "project": project,
         "definition": definition,
+    }
+
+def create_reference_with_generics(owner, project, definition, generics):
+    return {
+        "owner": owner,
+        "project": project,
+        "definition": definition,
+        "generics": generics,
     }
 
 
@@ -141,22 +151,16 @@ for f in files:
                 "module": module,
                 "declarations": []
             }
-        modules[module]["declarations"].append(create_type_alias(m[3], create_reference(m[4], m[5], m[6])))
+        generics = []
+        for i in range(0, len(m.captures(7))):
+            generics.append(create_reference(m.captures(7)[i], m.captures(8)[i], m.captures(9)[i]))
+            
+        modules[module]["declarations"].append(create_type_alias(m[3], create_reference_with_generics(m[4], m[5], m[6], generics)))
 
-    for m in re.finditer(exprs["scene_component"], content):
-        module = "{}/{}".format(m[1], m[2])
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        type_["resource"] = "SceneComponent"
-
-    for m in re.finditer(exprs["event"], content):
-        module = "{}/{}".format(m[1], m[2])
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        type_["resource"] = "Event"
-
-    for m in re.finditer(exprs["viewport_component"], content):
-        module = "{}/{}".format(m[1], m[2])
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        type_["resource"] = "ViewportComponent"
+    for m in re.finditer(exprs["resource_declaration"], content):
+        module = "{}/{}".format(m[2], m[3])
+        type_ = get_type("{}/{}".format(m[2], m[3]), m[4])
+        type_["resource"] = m[1]
 
     for m in re.finditer(exprs["type_property"], content, flags=re.MULTILINE):
         type_ = get_type("{}/{}".format(m[2], m[3]), m[4])

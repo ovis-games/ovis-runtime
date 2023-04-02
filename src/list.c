@@ -76,25 +76,24 @@ TYPE_DESTROY_DECL(TYPE(ovis, runtime, List)) {
 }
 
 TYPE_CLONE_DECL(TYPE(ovis, runtime, List)) {
-    // const struct TypeInfo* element_type = mod__ovis__runtime__List_element_type(list_type);
-    // const intptr_t element_stride = type_stride(element_type);
-    // const struct mod__ovis__runtime__List* src_list = src;
+    const struct TypeInfo* element_type = list_element_type(type_info);
+    const intptr_t element_stride = type_stride(element_type);
+    const List* src_list = src;
 
-    // void* data = malloc(src_list->capacity * element_stride);
-    // if (!data) {
-    //   RETURN_ERROR("out of memory");
-    // }
+    void* data = malloc(src_list->size * element_stride);
+    if (!data) {
+      RETURN_ERROR("out of memory");
+    }
 
-    // if (!clone_n(element_type, src_list->data, data, src_list->size)) {
-    //   return false;
-    // }
+    if (!clone_n(element_type, src_list->data, data, src_list->size)) {
+      return false;
+    }
 
-    // struct mod__ovis__runtime__List* dst_list = dst;
-    // dst_list->data = data;
-    // dst_list->size = src_list->size;
-    // dst_list->capacity = src_list->capacity;
-    // return true;
-    return false;
+    List* dst_list = dst;
+    dst_list->data = data;
+    dst_list->size = src_list->size;
+    dst_list->capacity = src_list->size;
+    return true;
 }
 
 GENERIC_INSTANTIATION_IMPL(TYPE(ovis, runtime, List)) {

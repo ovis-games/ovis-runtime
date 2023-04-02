@@ -118,19 +118,18 @@
   typedef TYPE_CONST_PTR(type) TYPE_CONST_PTR(alias)
 
 #define RESOURCE_ID(type) CONCAT(type, _resource_id)
-#define EVENT(type) extern int32_t RESOURCE_ID(type)
-#define SCENE_COMPONENT(type) extern int32_t RESOURCE_ID(type)
-#define VIEWPORT_COMPONENT(type) extern int32_t RESOURCE_ID(type)
+#define DECLARE_RESOURCE(resource_type, type) extern int32_t RESOURCE_ID(type)
 
 #define RESOURCE_IMPL(owner, project, type, kind) \
-  RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, TYPE_INFO(TYPE(owner, project, type))) \
+  RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, &TYPE_INFO(TYPE(owner, project, type))) \
 
  // TODO: what if register_resource() fails?
 #define RESOURCE_IMPL_WITH_INFO(owner, project, type, kind, info) \
   int32_t RESOURCE_ID(TYPE(owner, project, type)); \
   __attribute__((constructor)) void CONCAT(TYPE(owner, project, type), _resource_registration)() { \
-    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, kind, &info)->id; \
+    CONCAT(TYPE(owner, project, type), _resource_id) = register_resource(#owner "/" #project "/" #type, kind, info)->id; \
   }
+
 
 #define PROPERTY_GETTER_PREFIX(type, property_name) CONCAT3(type, _p_get_, property_name)
 #define PROPERTY_GETTER_DECL(type, property_name, property_type) bool PROPERTY_GETTER_PREFIX(type, property_name)(const struct TypeInfo* type_info, TYPE_CONST_PTR(type) object, TYPE_PTR(property_type) _output)

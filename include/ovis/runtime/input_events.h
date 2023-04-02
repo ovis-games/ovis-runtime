@@ -18,7 +18,7 @@ typedef struct {
 // An event that is emitted whenever the mouse moves.
 DECLARE_TYPE(ovis, runtime, MouseMoveEvent);
 TYPEDEF(MouseMoveEvent, TYPE(ovis, runtime, MouseMoveEvent));
-EVENT(TYPE(ovis, runtime, MouseMoveEvent));
+DECLARE_RESOURCE(Event, TYPE(ovis, runtime, MouseMoveEvent));
 
 // The current mouse position in screen space coordinates.
 DECLARE_PROPERTY(TYPE(ovis, runtime, MouseMoveEvent), position, TYPE(ovis, runtime, Vec2F));
@@ -39,7 +39,7 @@ typedef struct {
 // An event that is emitted whenever a mouse button is pressed or released.
 DECLARE_TYPE(ovis, runtime, MouseButtonEvent);
 TYPEDEF(MouseButtonEvent, TYPE(ovis, runtime, MouseButtonEvent));
-EVENT(TYPE(ovis, runtime, MouseButtonEvent));
+DECLARE_RESOURCE(Event, TYPE(ovis, runtime, MouseButtonEvent));
 
 // The current mouse position in screen space coordinates.
 DECLARE_PROPERTY(TYPE(ovis, runtime, MouseButtonEvent), position, TYPE(ovis, runtime, Vec2F));

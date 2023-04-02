@@ -25,9 +25,9 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
 );
 
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, EntitySpawnList), TYPE(ovis, runtime, List, TYPE(ovis, runtime, EntityDescriptor)));
+DECLARE_RESOURCE(EntitySpawnList, TYPE(ovis, runtime, EntitySpawnList));
 
-extern const struct TypeInfo* EntityDescriptorList;
-extern int32_t EntityDescriptorList_resource_id;
+extern const struct TypeInfo* EntitySpawnList;
 
 #ifdef __cplusplus
 }

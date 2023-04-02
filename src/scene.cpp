@@ -36,7 +36,7 @@ void ovis_scene_destroy(struct Scene* scene) {
 Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
     m_resource_storages.resize(RESOURCES.size());
 
-    EntityDescriptorList->initialize(EntityDescriptorList, &m_entities_to_spawn);
+    EntitySpawnList->initialize(EntitySpawnList, &m_entities_to_spawn);
 
     for (const auto& resource : RESOURCES) {
         switch (resource.kind) {
@@ -80,11 +80,11 @@ void Scene::tick(float delta_time) {
 
     for (int32_t i = 0; i < m_entities_to_spawn.size; ++i) {
         EntityDescriptor entity_desc;
-        if (TYPE_FUNCTION(TYPE(ovis, runtime, List), get)(EntityDescriptorList, &m_entities_to_spawn, &i, &entity_desc)) {
+        if (TYPE_FUNCTION(TYPE(ovis, runtime, List), get)(EntitySpawnList, &m_entities_to_spawn, &i, &entity_desc)) {
             m_entities.emplace();
         }
     }
-    TYPE_FUNCTION(TYPE(ovis, runtime, List), clear)(EntityDescriptorList, &m_entities_to_spawn);
+    TYPE_FUNCTION(TYPE(ovis, runtime, List), clear)(EntitySpawnList, &m_entities_to_spawn);
 
     assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime))));
     get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime)))->emplace(&delta_time);
@@ -217,7 +217,7 @@ bool Scene::iterate(
                         switch (resource->kind) {
                             case RESOURCE_KIND_ENTITY_SPAWN_LIST: {
                                 auto entities_to_spawn = (List*)output_resources[i];
-                                if (TYPE_FUNCTION(TYPE(ovis, runtime, List), append)(EntityDescriptorList, &m_entities_to_spawn, entities_to_spawn)) {
+                                if (TYPE_FUNCTION(TYPE(ovis, runtime, List), append)(EntitySpawnList, &m_entities_to_spawn, entities_to_spawn)) {
                                     printf("spawning %d entities before next frame\n", entities_to_spawn->size);
                                 }
                                 break;
@@ -264,5 +264,5 @@ bool Scene::iterate(
     return true;
 }
 
-RESOURCE_IMPL_WITH_INFO(ovis, runtime, DeltaTime, RESOURCE_KIND_SCENE_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Float)));
-RESOURCE_IMPL_WITH_INFO(ovis, runtime, GameTime, RESOURCE_KIND_SCENE_COMPONENT, TYPE_INFO(TYPE(ovis, runtime, Float)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, DeltaTime, RESOURCE_KIND_SCENE_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Float)));
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, GameTime, RESOURCE_KIND_SCENE_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Float)));
