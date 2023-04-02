@@ -109,24 +109,3 @@ TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
     REQUIRE(deregister_resource(Test_resource_id));
   }
 }
-
-// bool foo2_ran = false;
-// bool foo2(struct Scene*) {
-//   REQUIRE(false);
-//   foo_ran = true;
-//   return true;
-// }
-
-// TEST_CASE("Scheduler", "[ovis][runtime][scheduler]" ) {
-//   REQUIRE(register_job("foo", &foo));
-//   REQUIRE(get_job("foo") == &foo);
-//   REQUIRE(!register_job("foo", &foo));
-//   Scene* scene = ovis_scene_create();
-//   REQUIRE(scene != nullptr);
-
-//   REQUIRE(!foo_ran);
-//   ovis_scene_tick(scene, 0.0f);
-//   REQUIRE(foo_ran);
-
-//   ovis_scene_destroy(scene);
-// }

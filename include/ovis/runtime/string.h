@@ -15,11 +15,13 @@ struct String {
 };
 TYPEDEF(struct String, TYPE(ovis, runtime, String));
 
+// A string contains a sequence of UTF-8 encoded characters.
 DECLARE_TYPE(ovis, runtime, String);
 
 // This is a special function called by the compiler when constructing a string from a literal
 void mod__ovis__runtime__String_initialize_from_literal(const struct TypeInfo* string_type, void* ptr, const char* literal, int32_t length);
 
+// Reflects the number of bytes the string occupies.
 DECLARE_PROPERTY_GETTER(TYPE(ovis, runtime, String), size, TYPE(ovis, runtime, Int));
 
 DECLARE_TYPE_FUNCTION(

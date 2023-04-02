@@ -5,6 +5,7 @@
 #include "event_storage.hpp"
 #include "id_list.hpp"
 #include "indexed_component_storage.hpp"
+#include "ovis/runtime/list.h"
 #include "ovis/runtime/scene.h"
 #include "resource.hpp"
 #include "scene_component_storage.hpp"
@@ -15,6 +16,7 @@ class Scene {
     Scene();
 
     IdList::Id::Type add_viewport() { return m_viewports.emplace(); }
+    int32_t entity_count() const { return m_entities.count(); }
 
     void tick(float delta_time);
 
@@ -53,4 +55,8 @@ class Scene {
     std::vector<std::unique_ptr<ResourceStorage>> m_resource_storages;
     IdList m_viewports;
     IdList m_entities;
+    
+    // TODO: move this into a resource storage!
+    List m_entities_to_spawn;
+    std::vector<int32_t> m_entities_to_despawn;
 };

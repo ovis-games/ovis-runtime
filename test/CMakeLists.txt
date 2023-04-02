@@ -22,6 +22,7 @@ add_simple_test(test-basic-types)
 add_simple_test(test-list)
 add_simple_test(test-scheduler)
 add_simple_test(test-var)
+add_simple_test(test-scene)
 
 if (OVIS_EMSCRIPTEN)
   add_executable(test-module test_module.cpp)

@@ -1,18 +1,7 @@
 #include "ovis/runtime/entity_descriptor.h"
 #include "ovis/runtime/error.h"
+#include "entity_descriptor.hpp"
 #include <cstdlib>
-#include <unordered_map>
-
-struct EntityDescriptor {
-  public:
-    EntityDescriptor() {
-    }
-
-    ~EntityDescriptor() {
-    }
-
-    std::unordered_map<const struct TypeInfo*, void*> m_components;
-};
 
 TYPE_INFO_IMPL(ovis, runtime, EntityDescriptor);
 
@@ -48,3 +37,12 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
     self->m_components.insert(std::make_pair(C, component_ptr));
     return true;
 }
+
+const struct TypeInfo* EntityDescriptorList = instantiate_generic_type(
+    &GENERIC_INSTANTIATION_LIST(TYPE(ovis, runtime, List)),
+    1,
+    (Generic[]){ &TYPE_INFO(TYPE(ovis, runtime, EntityDescriptor)) }, 
+    GENERIC_INSTANTIATION_CALLBACK(TYPE(ovis, runtime, List))
+);
+
+int32_t EntityDescriptorList_resource_id = register_resource("EntityDescriptorList", RESOURCE_KIND_ENTITY_SPAWN_LIST, EntityDescriptorList)->id;

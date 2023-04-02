@@ -14,10 +14,11 @@
 #define GENERIC_PARAMETER(name, type) const void* name
 #define MUTABLE_GENERIC_PARAMETER(name, type) void* name
 #define RESULT(type) type* _output
+#define GENERIC_RESULT(type) void* _output
 #define DECLARE_FUNCTION(func, ...) bool func(__VA_ARGS__)
 #define FUNCTION_IMPL(func, ...) bool func(__VA_ARGS__)
 
-#define TYPE(owner, project, type) CONCAT3(MODULE(owner, project), __, type)
+#define TYPE(owner, project, type, ...) CONCAT3(MODULE(owner, project), __, type)
 #define TYPE_PTR(type) CONCAT(type, _ptr)
 #define TYPE_CONST_PTR(type) CONCAT(type, _cptr)
 #define TYPE_FROZEN(type) CONCAT(type, _frozen)
@@ -162,7 +163,7 @@
 #define MUTABLE_SELF(type) TYPE_PTR(type) self
 #define DECLARE_TYPE_FUNCTION(type, method_name, ...) bool TYPE_FUNCTION(type, method_name)(const struct TypeInfo* type_info, __VA_ARGS__)
 #define DECLARE_MEMBER_FUNCTION(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, SELF(type), __VA_ARGS__)
-#define DECLARE_MUTABLE_MEMBER_FUNCTION(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, MUTABLE_SELF(type), __VA_ARGS__)
+#define DECLARE_MUTABLE_MEMBER_FUNCTION(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, MUTABLE_SELF(type) __VA_OPT__(,) __VA_ARGS__)
 #define TYPE_FUNCTION_IMPL(type, method_name, ...) DECLARE_TYPE_FUNCTION(type, method_name, __VA_ARGS__)
 
 #define VARIABLE_STORAGE(type, identifier) alignas(16) char identifier[SIZE_OF(type)]

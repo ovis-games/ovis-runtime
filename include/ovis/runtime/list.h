@@ -14,11 +14,13 @@ typedef struct {
 } List;
 TYPEDEF(List, TYPE(ovis, runtime, List));
 
+// A list stores a number of elements of a single type.
 DECLARE_GENERIC_TYPE(
     ovis, runtime, List,
     GENERIC_TYPE(T)
 );
 
+// Reflects the number of items currently stored in the list.
 DECLARE_PROPERTY_GETTER(
     TYPE(ovis, runtime, List),
     length,
@@ -33,22 +35,27 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
 
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, List),
+    get,
+    PARAMETER(index, TYPE(ovis, runtime, Int)),
+    GENERIC_RESULT(T)
+);
+
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
     remove,
     PARAMETER(index, TYPE(ovis, runtime, Int))
 );
 
-// DECLARE_MUTABLE_MEMBER_FUNCTION(
-//     TYPE(ovis, runtime, List),
-//     clear
-// );
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
+    clear
+);
 
-// void mod__ovis__runtime__List_initialize(const struct TypeInfo* list_type, void* ptr);
-// void mod__ovis__runtime__List_destroy(const struct TypeInfo* list_type, void* ptr);
-// bool mod__ovis__runtime__List_clone(const struct TypeInfo* list_type, const void* src, void* dst);
-
-// bool mod__ovis__runtime__List_m_add(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const void* value);
-// bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int* index);
-// bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int* first_index, const int* second_index);
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
+    append,
+    PARAMETER(list, TYPE(ovis, runtime, List, GENERIC(T)))
+);
 
 #ifdef __cplusplus
 }

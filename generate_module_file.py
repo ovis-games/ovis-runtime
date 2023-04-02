@@ -15,12 +15,14 @@ exprs["s"] = "\s*"
 exprs["reference"] = "\((\w+)\s*,\s*(\w+),\s*(\w+)\)"
 exprs["type_reference"] = "TYPE\s*{reference}".format_map(exprs)
 
-exprs["type_declaration"] = "DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
+exprs["no_newline_space"] = "[ \t]"
+exprs["doc_comment"] = "(?:{no_newline_space}*//(.*)\n)*\s*".format_map(exprs)
+exprs["type_declaration"] = "{doc_comment}DECLARE_TYPE\s*{reference}\s*;".format_map(exprs)
 exprs["generic_type"] = "GENERIC_TYPE\s*\(\s*(\w+)\s*\)".format_map(exprs)
-exprs["generic_type_declaration"] = "DECLARE_GENERIC_TYPE{s}\({s}(\w+){s},{s}(\w+),\s(\w+)(?:{s},{s}{generic_type})*{s}\){s};".format_map(exprs)
-exprs["type_property"] = "DECLARE_PROPERTY\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
-exprs["type_property_getter"] = "DECLARE_PROPERTY_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
-exprs["type_property_setter"] = "DECLARE_PROPERTY_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["generic_type_declaration"] = "{doc_comment}DECLARE_GENERIC_TYPE{s}\({s}(\w+){s},{s}(\w+),\s(\w+)(?:{s},{s}{generic_type})*{s}\){s};".format_map(exprs)
+exprs["type_property"] = "{doc_comment}DECLARE_PROPERTY\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_property_getter"] = "{doc_comment}DECLARE_PROPERTY_GETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
+exprs["type_property_setter"] = "{doc_comment}DECLARE_PROPERTY_SETTER\s*\(\s*{type_reference}\s*,\s*(\w+)\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["type_alias"] = "DECLARE_TYPE_ALIAS\s*\(\s*{type_reference}\s*,\s*{type_reference}\s*\)\s*;".format_map(exprs)
 exprs["scene_component"] = "SCENE_COMPONENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
 exprs["event"] = "EVENT\s*\(\s*{type_reference}\s*\)".format_map(exprs)
@@ -39,10 +41,19 @@ exprs["function"] = "(?:{free_function}|{type_function})\s*{generics}\s*{paramet
 
 modules = {}
 
-def create_type_decl(name):
+def create_reference(owner, project, definition):
+    return {
+        "owner": owner,
+        "project": project,
+        "definition": definition,
+    }
+
+
+def create_type_decl(name, description):
     return {
         "Struct": {
             "name": name,
+            "description": description,
             "generics": [],
             "properties": [],
             "functions": [],
@@ -68,7 +79,7 @@ def create_function_decl(name):
 def create_param(name, owner, project, t):
     return {
         "name": name,
-        "type": "{}/{}/{}".format(owner, project, t),
+        "type": create_reference(owner, project, t),
     }
 
 def create_generic_param(name, g):
@@ -80,7 +91,7 @@ def create_generic_param(name, g):
 def create_property(name, owner, project, t):
     return {
         "name": name,
-        "type": "{}/{}/{}".format(owner, project, t),
+        "type": create_reference(owner, project, t),
     }
 
 def get_type(module, name):
@@ -101,24 +112,26 @@ def get_property(type_, name):
 for f in files:
     content = files[f]
 
-    for m in re.finditer(exprs["type_declaration"], content):
-        module = "{}/{}".format(m[1], m[2])
+    for m in re.finditer(exprs["type_declaration"], content, flags=re.MULTILINE):
+        desc = " ".join(map(lambda s: s.strip(), m.captures(1)))
+        module = "{}/{}".format(m[2], m[3])
         if not module in modules:
             modules[module] = {
                 "module": module,
                 "declarations": []
             }
-        modules[module]["declarations"].append(create_type_decl(m[3]))
+        modules[module]["declarations"].append(create_type_decl(m[4], desc))
 
-    for m in re.finditer(exprs["generic_type_declaration"], content):
-        module = "{}/{}".format(m[1], m[2])
+    for m in re.finditer(exprs["generic_type_declaration"], content, flags=re.MULTILINE):
+        desc = " ".join(map(lambda s: s.strip(), m.captures(1)))
+        module = "{}/{}".format(m[2], m[3])
         if not module in modules:
             modules[module] = {
                 "module": module,
                 "declarations": []
             }
-        type_ = create_type_decl(m[3])
-        type_["Struct"]["generics"] = m.captures(4)
+        type_ = create_type_decl(m[4], desc)
+        type_["Struct"]["generics"] = m.captures(5)
         modules[module]["declarations"].append(type_)
 
     for m in re.finditer(exprs["type_alias"], content):
@@ -128,7 +141,7 @@ for f in files:
                 "module": module,
                 "declarations": []
             }
-        modules[module]["declarations"].append(create_type_alias(m[3], "{}/{}/{}".format(m[4], m[5], m[6])))
+        modules[module]["declarations"].append(create_type_alias(m[3], create_reference(m[4], m[5], m[6])))
 
     for m in re.finditer(exprs["scene_component"], content):
         module = "{}/{}".format(m[1], m[2])
@@ -145,28 +158,32 @@ for f in files:
         type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
         type_["resource"] = "ViewportComponent"
 
-    for m in re.finditer(exprs["type_property"], content):
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        prop = create_property(m[4], m[5], m[6], m[7])
+    for m in re.finditer(exprs["type_property"], content, flags=re.MULTILINE):
+        type_ = get_type("{}/{}".format(m[2], m[3]), m[4])
+        prop = create_property(m[5], m[6], m[7], m[8])
+        prop["description"] = " ".join(map(lambda s: s.strip(), m.captures(1)))
         prop["get"] = True
         prop["set"] = True
         type_["properties"].append(prop)
 
-    for m in re.finditer(exprs["type_property_getter"], content):
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        prop = get_property(type_, m[4])
+    for m in re.finditer(exprs["type_property_getter"], content, flags=re.MULTILINE):
+        type_ = get_type("{}/{}".format(m[2], m[3]), m[4])
+        prop = get_property(type_, m[5])
         if prop == None:
-            prop = create_property(m[4], m[5], m[6], m[7])
+            prop = create_property(m[5], m[6], m[7], m[8])
+            prop["description"] = " ".join(map(lambda s: s.strip(), m.captures(1)))
             prop["get"] = True
             type_["properties"].append(prop)
         else:
             prop["get"] = True
 
-    for m in re.finditer(exprs["type_property_setter"], content):
-        type_ = get_type("{}/{}".format(m[1], m[2]), m[3])
-        prop = get_property(type_, m[4])
+    for m in re.finditer(exprs["type_property_setter"], content, flags=re.MULTILINE):
+        type_ = get_type("{}/{}".format(m[2], m[3]), m[4])
+        prop["description"] = " ".join(map(lambda s: s.strip(), m.captures(1)))
+        prop = get_property(type_, m[5])
         if prop == None:
-            prop = create_property(m[4], m[5], m[6], m[7])
+            prop = create_property(m[5], m[6], m[7], m[8])
+            prop["description"] = " ".join(map(lambda s: s.strip(), m.captures(1)))
             prop["set"] = True
             type_["properties"].append(prop)
         else:
@@ -207,7 +224,7 @@ for f in files:
         
         output_base = input_base + 6
         if m[output_base] != None:
-            f["Function"]["output"] = "{}/{}/{}".format(m[output_base + 0], m[output_base + 1], m[output_base + 2])
+            f["Function"]["output"] = create_reference(m[output_base + 0], m[output_base + 1], m[output_base + 2])
 
 for m in modules:
     with open("{}.json".format(m.replace("/", "--")), "w") as write:

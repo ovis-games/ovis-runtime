@@ -1,8 +1,11 @@
 #include "scene.hpp"
 #include "event_storage.hpp"
 #include "ovis/runtime/basic_types.h"
+#include "ovis/runtime/entity_descriptor.h"
+#include "ovis/runtime/error.h"
 #include "ovis/runtime/resource.h"
 #include "resource.hpp"
+#include "entity_descriptor.hpp"
 
 #include <alloca.h>
 #include <cassert>
@@ -22,6 +25,10 @@ void* ovis_scene_get_scene_component(struct Scene* scene, ResourceId resource_id
     return storage != nullptr ? storage->get() : nullptr;
 }
 
+int32_t ovis_scene_get_entity_count(const struct Scene* scene) {
+    return scene->entity_count();
+}
+
 void ovis_scene_destroy(struct Scene* scene) {
     delete scene;
 }
@@ -29,8 +36,18 @@ void ovis_scene_destroy(struct Scene* scene) {
 Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
     m_resource_storages.resize(RESOURCES.size());
 
+    EntityDescriptorList->initialize(EntityDescriptorList, &m_entities_to_spawn);
+
     for (const auto& resource : RESOURCES) {
         switch (resource.kind) {
+            case RESOURCE_KIND_ENTITY_SPAWN_LIST:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<ResourceStorage>(&resource);
+                break;
+
+            case RESOURCE_KIND_ENTITY_DESPAWN_LIST:
+                m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<ResourceStorage>(&resource);
+                break;
+
             case RESOURCE_KIND_EVENT:
                 m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<EventStorage>(&resource);
                 break;
@@ -41,9 +58,11 @@ Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
 
             case RESOURCE_KIND_VIEWPORT_COMPONENT:
                 m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
+                break;
 
             case RESOURCE_KIND_ENTITY_COMPONENT:
                 m_resource_storages[ResourceIdType::index(resource.id)] = std::make_unique<IndexedComponentStorage>(&resource);
+                break;
         }
     }
 
@@ -52,6 +71,21 @@ Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
 }
 
 void Scene::tick(float delta_time) {
+    for (auto entity_id : m_entities_to_despawn) {
+        if (m_entities.containts(entity_id)) {
+            m_entities.remove(entity_id);
+        }
+    }
+    m_entities_to_despawn.clear();
+
+    for (int32_t i = 0; i < m_entities_to_spawn.size; ++i) {
+        EntityDescriptor entity_desc;
+        if (TYPE_FUNCTION(TYPE(ovis, runtime, List), get)(EntityDescriptorList, &m_entities_to_spawn, &i, &entity_desc)) {
+            m_entities.emplace();
+        }
+    }
+    TYPE_FUNCTION(TYPE(ovis, runtime, List), clear)(EntityDescriptorList, &m_entities_to_spawn);
+
     assert(get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime))));
     get_scene_component_storage(RESOURCE_ID(TYPE(ovis, runtime, DeltaTime)))->emplace(&delta_time);
 
@@ -99,6 +133,11 @@ bool Scene::iterate(
         auto resource = get_resource(input_resource_ids[i]);
 
         switch (resource->kind) {
+            case RESOURCE_KIND_ENTITY_SPAWN_LIST:
+            case RESOURCE_KIND_ENTITY_DESPAWN_LIST: {
+                RETURN_ERROR("Invalid job input");
+            }
+
             case RESOURCE_KIND_EVENT: {
                 assert(event_storage == nullptr && "We currently can only handle one event as input");
                 event_storage = get_event_storage(resource->id);
@@ -176,6 +215,18 @@ bool Scene::iterate(
                     for (int i = 0; i < output_resource_ids_count; ++i) {
                         auto resource = get_resource(output_resource_ids[i]);
                         switch (resource->kind) {
+                            case RESOURCE_KIND_ENTITY_SPAWN_LIST: {
+                                auto entities_to_spawn = (List*)output_resources[i];
+                                if (TYPE_FUNCTION(TYPE(ovis, runtime, List), append)(EntityDescriptorList, &m_entities_to_spawn, entities_to_spawn)) {
+                                    printf("spawning %d entities before next frame\n", entities_to_spawn->size);
+                                }
+                                break;
+                            }
+
+                            case RESOURCE_KIND_ENTITY_DESPAWN_LIST:
+                                assert(false && "not implemented yet");
+                                break;
+
                             case RESOURCE_KIND_EVENT:
                                 assert(false && "not implemented yet");
                                 break;

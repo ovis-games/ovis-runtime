@@ -104,32 +104,45 @@ TEST_CASE("list ...", "[ovis][runtime][list]") {
 
         RELEASE_GENERIC_TYPE(TYPE(ovis, runtime, List), int_list);
     }
+
+    SECTION("... can be appended") {
+        REQUIRE(GENERIC_INSTANTIATION_LIST(TYPE(ovis, runtime, List)) == nullptr);
+
+        const struct TypeInfo* int_list = INSTANTIATE_GENERIC_TYPE(TYPE(ovis, runtime, List), &TYPE_INFO(TYPE(ovis, runtime, Int)));
+
+        List list1;
+        int_list->initialize(int_list, &list1);
+
+        List list2;
+        int_list->initialize(int_list, &list2);
+
+        int32_t i;
+
+        i = 0;
+        REQUIRE(TYPE_FUNCTION(TYPE(ovis, runtime, List), add)(int_list, &list1, &i));
+
+        i = 1;
+        REQUIRE(TYPE_FUNCTION(TYPE(ovis, runtime, List), add)(int_list, &list1, &i));
+
+        i = 2;
+        REQUIRE(TYPE_FUNCTION(TYPE(ovis, runtime, List), add)(int_list, &list2, &i));
+
+        i = 3;
+        REQUIRE(TYPE_FUNCTION(TYPE(ovis, runtime, List), add)(int_list, &list2, &i));
+
+
+        REQUIRE(PROPERTY_GETTER_PREFIX(TYPE(ovis, runtime, List), length)(int_list, &list1, &i));
+        REQUIRE(i == 2);
+
+        REQUIRE(PROPERTY_GETTER_PREFIX(TYPE(ovis, runtime, List), length)(int_list, &list2, &i));
+        REQUIRE(i == 2);
+
+        REQUIRE(TYPE_FUNCTION(TYPE(ovis, runtime, List), append)(int_list, &list1, &list2));
+
+        REQUIRE(PROPERTY_GETTER_PREFIX(TYPE(ovis, runtime, List), length)(int_list, &list1, &i));
+        REQUIRE(i == 4);
+
+        REQUIRE(PROPERTY_GETTER_PREFIX(TYPE(ovis, runtime, List), length)(int_list, &list2, &i));
+        REQUIRE(i == 2);
+    }
 }
-
-// TEST_CASE("value can be added and removed to list", "[ovis][runtime][mod__ovis__runtime__List]" ) {
-//   const struct TypeInfo* int_list_type = mod__ovis__runtime__List_instantiate(&mod__ovis__runtime__Int_type);
-
-//   push_stack_var(int_list_type, list, mod__ovis__runtime__List);
-
-//   REQUIRE(list->size == 0);
-//   REQUIRE(list->capacity == 0);
-//   REQUIRE(list->data == NULL);
-
-//   int32_t val = 42;
-//   REQUIRE(mod__ovis__runtime__List_m_add(int_list_type, list, &val));
-
-//   REQUIRE(list->size == 1);
-//   REQUIRE(list->capacity > 0);
-//   REQUIRE(list->data != NULL);
-
-//   int32_t remove_index = 0;
-//   REQUIRE(mod__ovis__runtime__List_m_remove(int_list_type, list, &remove_index));
-
-//   REQUIRE(list->size == 0);
-//   REQUIRE(list->capacity > 0);
-//   REQUIRE(list->data != NULL);
-
-//   pop_stack_var(list, int_list_type);
-
-//   mod__ovis__runtime__List_release(int_list_type);
-// }

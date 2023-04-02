@@ -30,6 +30,5 @@ void* EventStorage::event_ptr(int32_t index) {
 }
 
 void EventStorage::clear() {
-    // TODO: actually clear the list
-    m_events.size = 0;
+    TYPE_FUNCTION(TYPE(ovis, runtime, List), clear)(m_list_type, &m_events);
 }

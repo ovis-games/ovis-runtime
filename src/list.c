@@ -17,9 +17,8 @@ static const struct TypeInfo* list_element_type(const struct TypeInfo* list_type
     return list_type->generics[0];
 }
 
-static bool grow_list(const struct TypeInfo* list_type, List* list) {
-    // Use a growth rate of 1.5.
-    const int32_t new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
+static bool grow_list_to(const struct TypeInfo* list_type, List* list, int32_t new_capacity) {
+    assert(list->capacity <= new_capacity);
     const struct TypeInfo* element_type = list_element_type(list_type);
     void* new_data = aligned_alloc(element_type->align, element_type->stride * new_capacity);
     assert(is_ptr_aligned(new_data, element_type->align));
@@ -37,9 +36,19 @@ static bool grow_list(const struct TypeInfo* list_type, List* list) {
     }
 }
 
-static void* list_element_ptr(const struct TypeInfo* list_type, List* list, int32_t index) {
+static bool grow_list(const struct TypeInfo* list_type, List* list) {
+    // Use a growth rate of 1.5.
+    const int32_t new_capacity = list->capacity > 1 ? list->capacity + list->capacity / 2 : 2;
+    return grow_list_to(list_type, list, new_capacity);
+}
+
+static void* list_element_ptr(const struct TypeInfo* list_type, const List* list, int32_t index) {
     return offset_mutable_ptr(list->data, index * type_stride(list_element_type(list_type)));
 }
+
+// static void* list_element_mutable_ptr(const struct TypeInfo* list_type, List* list, int32_t index) {
+//     return offset_mutable_ptr(list->data, index * type_stride(list_element_type(list_type)));
+// }
 
 static void* list_end(const struct TypeInfo* list_type, List* list) {
     return list_element_ptr(list_type, list, list->size);
@@ -127,6 +136,21 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
 
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, List),
+    get,
+    PARAMETER(index, TYPE(ovis, runtime, Int)),
+    GENERIC_RESULT(T)
+) {
+    if (*index < 0 || *index >= self->size) {
+        RETURN_ERROR("index out of bounds");
+    }
+
+    const struct TypeInfo* element_type = list_element_type(type_info);
+    void* element_ptr = list_element_ptr(type_info, self, *index);
+    return element_type->clone(element_type, element_ptr, _output);
+}
+
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
     remove,
     PARAMETER(index, TYPE(ovis, runtime, Int))
 ) {
@@ -143,19 +167,32 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
     return true;
 }
 
-// bool mod__ovis__runtime__List_m_add(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const void* value) {
-// }
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
+    clear
+) {
+    destroy_n(list_element_type(type_info), self->data, self->size);
+    self->size = 0;
+    return true;
+}
 
-// bool mod__ovis__runtime__List_m_remove(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int32_t* index) {
-// }
+DECLARE_MUTABLE_MEMBER_FUNCTION(
+    TYPE(ovis, runtime, List),
+    append,
+    PARAMETER(other, TYPE(ovis, runtime, List, GENERIC(T)))
+) {
+    const int32_t required_capacity = self->size + other->size;
+    if (self->capacity < required_capacity) {
+        if (!grow_list_to(type_info, self, required_capacity)) {
+            return false;
+        }
+    }
 
-// bool mod__ovis__runtime__List_m_swap(const struct TypeInfo* list_type, struct mod__ovis__runtime__List* list, const int32_t* first_index, const int32_t* second_index) {
-//   const struct TypeInfo* element_type = mod__ovis__runtime__List_element_type(list_type);
-//   uint8_t temp[element_type->size];
-//   void* first_element = list_element_ptr(list_type, list, *first_index);
-//   void* second_element = list_element_ptr(list_type, list, *second_index);
-//   memcpy(temp, first_element, element_type->size);
-//   memcpy(first_element, second_element, element_type->size);
-//   memcpy(second_element, temp, element_type->size);
-//   return true;
-// }
+    const struct TypeInfo* element_type = list_element_type(type_info);
+    if (!clone_n(element_type, list_element_ptr(type_info, other, 0), list_end(type_info, self), other->size)) {
+        return false;
+    }
+    self->size += other->size;
+
+    return true;
+}
