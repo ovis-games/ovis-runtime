@@ -20,6 +20,7 @@ DEFINE_BASIC_TYPE(ovis, runtime, Mat2x2F);
 DEFINE_BASIC_TYPE(ovis, runtime, Mat3x3F);
 DEFINE_BASIC_TYPE(ovis, runtime, Mat3x4F);
 DEFINE_BASIC_TYPE(ovis, runtime, Mat4x4F);
+DEFINE_BASIC_TYPE(ovis, runtime, Color);
 
 TYPE_FUNCTION_IMPL(
     TYPE(ovis, runtime, Bool), not,
@@ -351,4 +352,36 @@ PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Vec4F), w, TYPE(ovis, runtime, Float)) 
     return true;
 }
 
-// PROPERTY_GETTER_DECL(
+
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Color), r, TYPE(ovis, runtime, Float)) {
+    *_output = object[0];
+    return true;
+}
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Color), r, TYPE(ovis, runtime, Float)) {
+    object[0] = *value;
+    return true;
+}
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Color), g, TYPE(ovis, runtime, Float)) {
+    *_output = object[1];
+    return true;
+}
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Color), g, TYPE(ovis, runtime, Float)) {
+    object[1] = *value;
+    return true;
+}
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Color), b, TYPE(ovis, runtime, Float)) {
+    *_output = object[2];
+    return true;
+}
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Color), b, TYPE(ovis, runtime, Float)) {
+    object[2] = *value;
+    return true;
+}
+PROPERTY_GETTER_DECL(TYPE(ovis, runtime, Color), a, TYPE(ovis, runtime, Float)) {
+    *_output = object[3];
+    return true;
+}
+PROPERTY_SETTER_DECL(TYPE(ovis, runtime, Color), a, TYPE(ovis, runtime, Float)) {
+    object[3] = *value;
+    return true;
+}

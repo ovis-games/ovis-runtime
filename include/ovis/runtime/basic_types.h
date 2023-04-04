@@ -223,6 +223,20 @@ DECLARE_TYPE(ovis, runtime, Mat3x4F);
 TYPEDEF_ARRAY(TYPE(ovis, runtime, Vec4F), 4, TYPE(ovis, runtime, Mat4x4F));
 DECLARE_TYPE(ovis, runtime, Mat4x4F);
 
+
+TYPEDEF_ALIGNED_ARRAY(float, 16, 4, TYPE(ovis, runtime, Color));
+// A RGBA color value.
+DECLARE_TYPE(ovis, runtime, Color);
+
+// Red component of the color.
+DECLARE_PROPERTY(TYPE(ovis, runtime, Color), r, TYPE(ovis, runtime, Float));
+// Green component of the color.
+DECLARE_PROPERTY(TYPE(ovis, runtime, Color), g, TYPE(ovis, runtime, Float));
+// Blue component of the color.
+DECLARE_PROPERTY(TYPE(ovis, runtime, Color), b, TYPE(ovis, runtime, Float));
+// Alpha component of the color.
+DECLARE_PROPERTY(TYPE(ovis, runtime, Color), a, TYPE(ovis, runtime, Float));
+
 #ifdef __cplusplus
 }
 #endif

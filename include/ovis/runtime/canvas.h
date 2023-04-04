@@ -12,7 +12,7 @@ struct Canvas;
 struct Canvas* ovis_canvas_create(struct Scene* scene, const char* canvas_id);
 void ovis_canvas_destroy(struct Canvas* canvas);
 
-DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, ClearColor), TYPE(ovis, runtime, Vec4F));
+DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, ClearColor), TYPE(ovis, runtime, Color));
 DECLARE_RESOURCE(ViewportComponent, TYPE(ovis, runtime, ClearColor));
 
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, ViewportDimensions), TYPE(ovis, runtime, Vec2F));
