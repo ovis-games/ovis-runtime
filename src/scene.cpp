@@ -72,7 +72,7 @@ Scene::Scene() : m_update_scheduler(JOB_KIND_UPDATE) {
 
 void Scene::tick(float delta_time) {
     for (auto entity_id : m_entities_to_despawn) {
-        if (m_entities.containts(entity_id)) {
+        if (m_entities.contains(entity_id)) {
             m_entities.remove(entity_id);
         }
     }

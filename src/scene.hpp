@@ -26,6 +26,8 @@ class Scene {
         IterateCallback callback
     );
 
+    IdList& entities() { return m_entities; }
+
     ResourceStorage* get_resource_storage(ResourceId id) {
         assert(ResourceIdType::index(id) < m_resource_storages.size());
         return m_resource_storages[ResourceIdType::index(id)].get();
@@ -45,7 +47,10 @@ class Scene {
 
     IndexedComponentStorage* get_indexed_component_storage(ResourceId id) {
         assert(ResourceIdType::index(id) < m_resource_storages.size());
-        assert(m_resource_storages[ResourceIdType::index(id)].get()->resource()->kind == RESOURCE_KIND_VIEWPORT_COMPONENT);
+        assert(
+            m_resource_storages[ResourceIdType::index(id)].get()->resource()->kind == RESOURCE_KIND_VIEWPORT_COMPONENT ||
+            m_resource_storages[ResourceIdType::index(id)].get()->resource()->kind == RESOURCE_KIND_ENTITY_COMPONENT
+        );
         return static_cast<IndexedComponentStorage*>(m_resource_storages[ResourceIdType::index(id)].get());
     }
 
@@ -55,7 +60,7 @@ class Scene {
     std::vector<std::unique_ptr<ResourceStorage>> m_resource_storages;
     IdList m_viewports;
     IdList m_entities;
-    
+
     // TODO: move this into a resource storage!
     List m_entities_to_spawn;
     std::vector<int32_t> m_entities_to_despawn;
