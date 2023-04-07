@@ -11,6 +11,11 @@ macro(add_simple_test name)
       Catch2::Catch2
       Catch2::Catch2WithMain
   )
+  target_include_directories(
+    ${name}
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src
+  )
 
   add_test(
     NAME ${name}
@@ -23,6 +28,7 @@ add_simple_test(test-list)
 add_simple_test(test-scheduler)
 add_simple_test(test-var)
 add_simple_test(test-scene)
+add_simple_test(test-id-list)
 
 if (OVIS_EMSCRIPTEN)
   add_executable(test-module test_module.cpp)
