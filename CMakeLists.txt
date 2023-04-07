@@ -50,6 +50,7 @@ add_library(
   include/ovis/runtime/scene.h src/scene.hpp src/scene.cpp
   include/ovis/runtime/canvas.h src/canvas.cpp
   include/ovis/runtime/entity_descriptor.h src/entity_descriptor.cpp
+  include/ovis/runtime/shapes.h src/shapes.cpp
 
   src/scheduler.hpp src/scheduler.cpp
   src/id_list.hpp src/id_list.cpp
