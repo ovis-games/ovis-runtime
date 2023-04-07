@@ -6,18 +6,20 @@
 extern "C" {
 #endif
 
-typedef enum {
+typedef enum ResourceAccessKind {
     RESOURCE_ACCESS_READ = 1,
     RESOURCE_ACCESS_WRITE = 2,
     RESOURCE_ACCESS_READ_WRITE = RESOURCE_ACCESS_READ | RESOURCE_ACCESS_WRITE,
 } ResourceAccessKind;
 
-typedef struct {
-    const char* resource_name;
+typedef int32_t ResourceId;
+
+typedef struct ResourceAccess {
+    ResourceId resource_id;
     ResourceAccessKind access;
 } ResourceAccess;
 
-typedef enum {
+typedef enum ResourceKind {
     RESOURCE_KIND_ENTITY_SPAWN_LIST,
     RESOURCE_KIND_ENTITY_DESPAWN_LIST,
     RESOURCE_KIND_EVENT,
@@ -26,14 +28,17 @@ typedef enum {
     RESOURCE_KIND_ENTITY_COMPONENT,
 } ResourceKind;
 
-typedef int32_t ResourceId;
-
-typedef struct {
+typedef struct Resource {
     ResourceId id;
     const char* name;
     ResourceKind kind;
     const struct TypeInfo* type;
 } Resource;
+
+typedef ResourceId SceneComponent;
+typedef ResourceId EntityComponent;
+typedef ResourceId ViewportComponent;
+typedef ResourceId Event;
 
 Resource* register_resource(const char* name, ResourceKind kind, const struct TypeInfo* type);
 bool deregister_resource(ResourceId id);

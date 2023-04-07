@@ -24,6 +24,15 @@ DECLARE_RESOURCE(ViewportComponent, TYPE(ovis, runtime, ProjectionMatrix));
 DECLARE_TYPE_ALIAS(TYPE(ovis, runtime, ViewMatrix), TYPE(ovis, runtime, Mat3x4F));
 DECLARE_RESOURCE(ViewportComponent, TYPE(ovis, runtime, ViewMatrix));
 
+typedef struct Framebuffer {
+    int dummy;
+} Framebuffer;
+TYPEDEF(Framebuffer, TYPE(ovis, runtime, Framebuffer));
+
+// The framebuffer that contains the content of a viewport.
+DECLARE_TYPE(ovis, runtime, Framebuffer);
+DECLARE_RESOURCE(ViewportComponent, TYPE(ovis, runtime, Framebuffer));
+
 #ifdef __cplusplus
 }
 #endif

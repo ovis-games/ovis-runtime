@@ -6,7 +6,7 @@
 
 IndexedComponentStorage::IndexedComponentStorage(const Resource* resource) : ResourceStorage(resource) {
     assert(resource);
-    assert(resource->kind == RESOURCE_KIND_VIEWPORT_COMPONENT);
+    assert(resource->kind == RESOURCE_KIND_VIEWPORT_COMPONENT || resource->kind == RESOURCE_KIND_ENTITY_COMPONENT);
     m_list_type = INSTANTIATE_GENERIC_TYPE(TYPE(ovis, runtime, List), resource->type);
     m_list_type->initialize(m_list_type, &m_components);
 }

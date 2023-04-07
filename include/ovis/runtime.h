@@ -12,3 +12,4 @@
 #include "runtime/symbols.h"
 #include "runtime/type.h"
 #include "runtime/entity_descriptor.h"
+#include "runtime/shapes.h"

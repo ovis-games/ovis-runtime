@@ -17,7 +17,7 @@ typedef bool (*CloneFunction)(const struct TypeInfo*, const void*, void*);
 
 typedef const struct TypeInfo* Generic;
 
-struct TypeInfo {
+typedef struct TypeInfo {
     intptr_t size;
     intptr_t align;
     intptr_t stride;
@@ -27,7 +27,7 @@ struct TypeInfo {
     intptr_t generic_count;
     Generic* generics;
     const char* name;
-};
+} TypeInfo;
 
 struct GenericTypeInstantiation {
     struct GenericTypeInstantiation* next;

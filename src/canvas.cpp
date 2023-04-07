@@ -103,10 +103,23 @@ bool clear_framebuffer(struct Scene* scene) {
 }
 
 __attribute__((constructor)) void setup_clear_framebuffer_job() {
-    register_job("ovis/runtime/clearFramebuffer", &clear_framebuffer, JOB_KIND_UPDATE, 0, nullptr);
+    ResourceAccess resource_accesses[] = {
+        {
+            .resource_id = RESOURCE_ID(TYPE(ovis, runtime, Framebuffer)),
+            .access = RESOURCE_ACCESS_WRITE,
+        },
+        {
+            .resource_id = RESOURCE_ID(TYPE(ovis, runtime, ClearColor)),
+            .access = RESOURCE_ACCESS_READ,
+        },
+    };
+    register_job("ovis/runtime/clearFramebuffer", &clear_framebuffer, JOB_KIND_UPDATE, sizeof(resource_accesses) / sizeof(resource_accesses[0]), resource_accesses);
 }
 
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ClearColor, RESOURCE_KIND_VIEWPORT_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Color)));
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ViewportDimensions, RESOURCE_KIND_VIEWPORT_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Vec2F)));
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ProjectionMatrix, RESOURCE_KIND_VIEWPORT_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Mat4x4F)));
 RESOURCE_IMPL_WITH_INFO(ovis, runtime, ViewMatrix, RESOURCE_KIND_VIEWPORT_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Mat3x4F)));
+
+DEFINE_BASIC_TYPE(ovis, runtime, Framebuffer);
+RESOURCE_IMPL_WITH_INFO(ovis, runtime, Framebuffer, RESOURCE_KIND_VIEWPORT_COMPONENT, &TYPE_INFO(TYPE(ovis, runtime, Framebuffer)));

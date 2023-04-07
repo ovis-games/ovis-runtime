@@ -8,13 +8,14 @@ extern "C" {
 
 #include <stdint.h>
 
-typedef enum {
+typedef enum JobKind {
     JOB_KIND_SETUP,
     JOB_KIND_UPDATE,
 } JobKind;
 
 typedef bool (*JobFunction)(struct Scene*);
-typedef struct {
+
+typedef struct Job {
     const char* name;
     JobFunction function;
     JobKind kind;
