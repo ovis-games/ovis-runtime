@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ovis/runtime/resource.h"
 #include <unordered_map>
 
 struct EntityDescriptor {
@@ -10,6 +11,6 @@ struct EntityDescriptor {
     ~EntityDescriptor() {
     }
 
-    std::unordered_map<const struct TypeInfo*, void*> m_components;
+    std::unordered_map<ResourceId, void*> m_components;
 };
 

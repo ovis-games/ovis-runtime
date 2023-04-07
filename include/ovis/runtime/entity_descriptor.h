@@ -20,7 +20,7 @@ DECLARE_TYPE(ovis, runtime, EntityDescriptor);
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, EntityDescriptor),
     addComponent,
-    GENERIC(C),
+    GENERIC(C, INTERFACE(EntityComponent, C_EntityComponent)),
     GENERIC_PARAMETER(component, C)
 );
 

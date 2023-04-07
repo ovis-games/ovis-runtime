@@ -22,10 +22,10 @@ TYPE_CLONE_DECL(TYPE(ovis, runtime, EntityDescriptor)) {
 DECLARE_MUTABLE_MEMBER_FUNCTION(
     TYPE(ovis, runtime, EntityDescriptor),
     addComponent,
-    GENERIC(C),
+    GENERIC(C, INTERFACE(EntityComponent, C_EntityComponent)),
     GENERIC_PARAMETER(component, C)
 ) {
-    if (self->m_components.contains(C)) {
+    if (self->m_components.contains(*C_EntityComponent)) {
         RETURN_ERROR("Component already added");
     }
 
@@ -35,7 +35,7 @@ DECLARE_MUTABLE_MEMBER_FUNCTION(
         return false;
     }
 
-    self->m_components.insert(std::make_pair(C, component_ptr));
+    self->m_components.insert(std::make_pair(*C_EntityComponent, component_ptr));
     return true;
 }
 
