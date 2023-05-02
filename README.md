@@ -4,7 +4,7 @@
 This repository contains the runtime library for a custom ECS focused programming language I developed.
 The overarching idea was to create a website where you can easily create interactive graphical applications which would be ideal to for creating small games, trying out additional rendering techniques and general rapid prototyping.
 
-## ECS Concept (WIP)
+## ECS Concept
 This runtime extends on the concept of traditional ECS frameworks.
 Traditionally, the state in ECS frameworks consist of a set of entities (usually just some kind of id) and components (arbitrary data types the can be "attached" to entites).
 Additionally, there are a set of systems (basically functions) that are able to modify the state.
